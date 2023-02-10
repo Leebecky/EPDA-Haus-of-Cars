@@ -6,35 +6,47 @@
 package model;
 
 import java.io.Serializable;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 /**
  *
  * @author leebe
  */
-@Inheritance(strategy = InheritanceType.JOINED)
 @Entity
+@DiscriminatorValue("MstCustomer")
+@PrimaryKeyJoinColumn(name = "USERID")
 public class MstCustomer extends MstMember implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    // Attributes
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.AUTO)
 //    private String id;
+    private String drivingLicense;
+    private String icImage;
 //
+
 //    public String getId() {
 //        return id;
 //    }
-//
+//    
 //    public void setId(String id) {
 //        this.id = id;
 //    }
+    // Constructors
+    public MstCustomer() {
+    }
 
-    // Attributes
-    private String drivingLicense;
-    private String icImage;
+    public MstCustomer(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.userType = "Customer";
+        this.status = "Active";
+    }
 
     // Getters & Setters
     public String getDrivingLicense() {
@@ -53,6 +65,11 @@ public class MstCustomer extends MstMember implements Serializable {
         this.icImage = icImage;
     }
 
+    //    Methods
+    public static MstCustomer createNewCustomer(String username, String email, String password) {
+        MstCustomer member = new MstCustomer(username, email, password);
+        return member;
+    }
 
     @Override
     public int hashCode() {

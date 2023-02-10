@@ -5,9 +5,13 @@
  */
 package facade;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaQuery;
 import model.MstMember;
 
 /**
@@ -28,5 +32,34 @@ public class MstMemberFacade extends AbstractFacade<MstMember> {
     public MstMemberFacade() {
         super(MstMember.class);
     }
-    
+
+    public MstMember getUser(String email) {
+        try {
+
+            TypedQuery<MstMember> query = em.createQuery("select m from MstMember m where m.email = :mail", MstMember.class);
+            query.setParameter("mail", email);
+            MstMember data = query.getSingleResult();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("MstMemberFacade - getUser : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public MstMember loginUser(String email, String password) {
+        try {
+
+            TypedQuery<MstMember> query = em.createQuery("select m from MstMember m where m.email = :mail and m.password = :pass", MstMember.class);
+            query.setParameter("mail", email);
+            query.setParameter("pass", password);
+            MstMember data = query.getSingleResult();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("MstMemberFacade - LoginUser : " + e.getMessage());
+            return null;
+        }
+    }
+
 }
