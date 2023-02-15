@@ -28,3 +28,9 @@ replay_pid*
 *.xml
 *.properties
 *.MF
+/EPDA_Car_Sales_System/EPDA_Car_Sales_System-ejb/build/
+/EPDA_Car_Sales_System/EPDA_Car_Sales_System-war/build/
+/EPDA_Car_Sales_System/build/
+/EPDA_Car_Sales_System/EPDA_Car_Sales_System-ejb/dist/
+/EPDA_Car_Sales_System/EPDA_Car_Sales_System-war/dist/
+/EPDA_Car_Sales_System/dist/
