@@ -34,3 +34,4 @@ replay_pid*
 /EPDA_Car_Sales_System/EPDA_Car_Sales_System-ejb/dist/
 /EPDA_Car_Sales_System/EPDA_Car_Sales_System-war/dist/
 /EPDA_Car_Sales_System/dist/
+EPDA_Car_Sales_System/EPDA_Car_Sales_System-war/web/images/*
