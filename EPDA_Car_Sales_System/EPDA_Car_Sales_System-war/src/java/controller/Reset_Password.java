@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author leebe
  */
 @WebServlet(name = "ResetPassword", urlPatterns = {"/ResetPassword"})
-public class ResetPassword extends HttpServlet {
+public class Reset_Password extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

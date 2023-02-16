@@ -12,7 +12,7 @@
         <body>
             <jsp:include page="_layout/header.jsp" />
             <h1>Reports!</h1>
-            <a href="admin_manage_users.jsp">Manage users</a>
+            <a href="Admin_Manage_Users">Manage users</a>
         </body>
 
         </html>

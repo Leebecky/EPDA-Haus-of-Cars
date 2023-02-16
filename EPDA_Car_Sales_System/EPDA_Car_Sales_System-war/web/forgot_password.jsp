@@ -8,7 +8,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="ResetPassword" method="POST" id="frmResetPassword">
+        <form action="Reset_Password" method="POST" id="frmResetPassword">
           <div class="mb-3">
             <label for="" class="form-label">Email</label>
             <input type="email" class="form-control" id="resetEmail" name="resetEmail" aria-describedby="emailHelpId"

@@ -5,32 +5,28 @@
  */
 package controller;
 
-import facade.MstCustomerFacade;
 import facade.MstMemberFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
-import javax.servlet.RequestDispatcher;
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.MstCustomer;
 import model.MstMember;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Register", urlPatterns = {"/Register"})
-public class Register extends HttpServlet {
+@WebServlet(name = "Admin_Delete_User", urlPatterns = {"/Admin_Delete_User"})
+public class Admin_Delete_User extends HttpServlet {
 
     @EJB
-    MstMemberFacade memberFacade = new MstMemberFacade();
-    @EJB
-    MstCustomerFacade customerFacade = new MstCustomerFacade();
+    MstMemberFacade memberFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -44,52 +40,16 @@ public class Register extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
-
         try (PrintWriter out = response.getWriter()) {
-            // Registration Verification
-            String username = request.getParameter("username");
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-            String userRole = request.getParameter("userRole");
+            String userId = request.getParameter("userId");
 
-            MstMember member = memberFacade.getUser(email);
-            if (member == null) {
-                if (userRole.equals("Customer")) {
-
-                    MstCustomer cus = MstCustomer.createNewCustomer(username, email, password);
-                    customerFacade.create(cus);
-
-                    // On Success, Redirect to Customer Home
-                    MstMember loggedInUser = memberFacade.getUser(email);
-
-                    HttpSession ses = request.getSession();
-                    ses.setAttribute("user", loggedInUser);
-
-                    response.sendRedirect("home.jsp");
-                } else {
-                     MstMember salesman = MstMember.createNewSalesman(username, email, password, "Inactive");
-                    memberFacade.create(salesman);
-
-                    // On Success, Redirect to Salesman Home
-                    MstMember loggedInUser = memberFacade.getUser(email);
-
-                    HttpSession ses = request.getSession();
-                    ses.setAttribute("user", loggedInUser);
-
-                    response.sendRedirect("home.jsp");
-                }
-          
-            } else {
-                request.setAttribute("error", "This email already has an account!");
-                rd.forward(request, response);
-                return;
-            }
-
+            MstMember member = memberFacade.find(userId);
+            memberFacade.remove(member);
+            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();
+            response.getWriter().write(json.toString());
         } catch (Exception ex) {
-            request.setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            rd.forward(request, response);
-            return;
+            JsonObject json = Json.createObjectBuilder().add("msg", "Error deleting user: " + ex.getMessage()).build();
+            response.getWriter().write(json.toString());
         }
     }
 

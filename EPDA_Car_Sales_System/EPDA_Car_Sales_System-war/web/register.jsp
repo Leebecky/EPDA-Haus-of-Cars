@@ -23,7 +23,7 @@
                     $('#frmRegister').submit((e) => {
                         if (!verifyData()) {
                             e.preventDefault();
-                        }                        
+                        }
                     })
                 })
 
@@ -60,6 +60,11 @@
                         return false;
                     }
 
+                    if ($("#userRole").val() == "Select User Role") {
+                        alert("Please select a user role!");
+                        return false;
+                    }
+
                     return true;
                 }
             </script>
@@ -87,6 +92,7 @@
                                 <!-- Email -->
                                 <div class="form-group mb-3">
                                     <input type="email" class="form-control" placeholder="Email" name="email" required>
+                                    <b class="text-danger text-bold" style="background-color: rgba(184, 181, 181, 0.692)">${error}</b>
                                 </div>
 
                                 <!-- Password -->
@@ -104,12 +110,22 @@
                                         placeholder="Confirm Password" required>
                                 </div>
 
+                                <!-- Select User Role -->
+                                <div class="input-group mb-3">
+                                    <select class="form-select" id="userRole" name="userRole"
+                                        aria-label="Select User Role" required>
+                                        <option selected>Select User Role</option>
+                                        <option value="Customer">Customer</option>
+                                        <option value="Salesman">Salesman</option>
+                                    </select>
+                                </div>
+
                                 <!-- Submit -->
                                 <div class="form-group mt-5 mb-3">
                                     <button id="btnSubmit" form="frmRegister" type="submit"
                                         class="form-control btn btn-primary submit px-3">Register</button>
                                 </div>
-                                <b class="text-danger text-bold">${error}</b>
+
                             </form>
                         </div>
                     </div>

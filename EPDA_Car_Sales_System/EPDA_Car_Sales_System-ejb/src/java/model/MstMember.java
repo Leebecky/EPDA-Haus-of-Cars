@@ -8,7 +8,6 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -53,6 +52,18 @@ public class MstMember implements Serializable {
         this.email = email;
         this.password = password;
         this.status = "Active";
+    }
+
+    // Methods
+    public static MstMember createNewSalesman(String username, String email, String password, String userStatus) {
+        MstMember salesman = new MstMember();
+        salesman.username = username;
+        salesman.email = email;
+        salesman.password = password;
+        salesman.userType = "Salesman";
+        salesman.status = userStatus;
+
+        return salesman;
     }
 
     // Getters & Setters    
