@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <nav class="navbar navbar-expand-sm" style="background-color: #263159;">
-    <a class="navbar-brand" href="home.jsp">
+    <a class="navbar-brand" href="Home">
         <img src="images/car-logo-rectangle-white.png" alt="Haus of Cars" width="100">
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavId"
@@ -8,13 +8,13 @@
     <div class="collapse navbar-collapse" id="collapsibleNavId">
         <ul class="navbar-nav me-auto mt-2 mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link text-light fs-5" href="home.jsp" aria-current="page">Home</a>
+                <a class="nav-link text-light fs-5" href="Home" aria-current="page">Home</a>
             </li>
         </ul>
 
         <!-- IF User is NOT Logged In -->
         <c:if test = "${sessionScope.user == null}">
-            <div class="d-flex my-2 my-lg-0 mx-2"><a href="login.jsp">
+            <div class="d-flex my-2 my-lg-0 mx-2"><a href="Login">
                     <i class="bi bi-person-circle" style="font-size: 2rem; color: white;"></i>
                 </a>
             </div>
@@ -29,7 +29,7 @@
                     <i class="bi bi-person-circle" style="font-size: 2rem; color: white;"></i>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="dropdownId">
-                    <a class="dropdown-item" href="home.jsp">User Profile</a>
+                    <a class="dropdown-item" href="Home">User Profile</a>
                     <a class="dropdown-item" href="Logout">Logout</a>
                 </div>
             </div>

@@ -52,9 +52,9 @@ public class Login extends HttpServlet {
             MstMember member = memberFacade.loginUser(email, password);
 
             if (member == null) {
-
-                request.setAttribute("error", "No account with these credentials found!");
-                rd.forward(request, response);
+                request.getSession().setAttribute("error", "No account with these credentials found!");
+                response.sendRedirect("Login");
+//                rd.forward(request, response);
                 return;
             } else {
                 // On Success, Redirect to Customer Home
@@ -72,8 +72,9 @@ public class Login extends HttpServlet {
             }
 
         } catch (Exception ex) {
-            request.setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            rd.forward(request, response);
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Login");
+//            rd.forward(request, response);
             return;
         }
     }
@@ -90,7 +91,9 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+        rd.include(request, response);
     }
 
     /**

@@ -44,7 +44,7 @@ public class Register extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+//        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
 
         try (PrintWriter out = response.getWriter()) {
             // Registration Verification
@@ -66,9 +66,9 @@ public class Register extends HttpServlet {
                     HttpSession ses = request.getSession();
                     ses.setAttribute("user", loggedInUser);
 
-                    response.sendRedirect("home.jsp");
+                    response.sendRedirect("Home");
                 } else {
-                     MstMember salesman = MstMember.createNewSalesman(username, email, password, "Inactive");
+                    MstMember salesman = MstMember.createNewSalesman(username, email, password, "Inactive");
                     memberFacade.create(salesman);
 
                     // On Success, Redirect to Salesman Home
@@ -77,18 +77,19 @@ public class Register extends HttpServlet {
                     HttpSession ses = request.getSession();
                     ses.setAttribute("user", loggedInUser);
 
-                    response.sendRedirect("home.jsp");
+                    response.sendRedirect("Home");
                 }
-          
+
             } else {
-                request.setAttribute("error", "This email already has an account!");
-                rd.forward(request, response);
+                request.getSession().setAttribute("error", "This email already has an account!");
+                response.sendRedirect("Register");
+//                rd.forward(request, response);
                 return;
             }
 
         } catch (Exception ex) {
-            request.setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            rd.forward(request, response);
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Register");
             return;
         }
     }
@@ -105,7 +106,8 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+        rd.include(request, response);
     }
 
     /**

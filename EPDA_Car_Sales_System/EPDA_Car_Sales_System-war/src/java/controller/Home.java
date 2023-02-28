@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author leebe
  */
-@WebServlet(name = "Reset_Password", urlPatterns = {"/Reset_Password"})
-public class Reset_Password extends HttpServlet {
+@WebServlet(name = "Home", urlPatterns = {"/Home"})
+public class Home extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,17 +30,12 @@ public class Reset_Password extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //TODO IMPLEMENT
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-//        RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
         try (PrintWriter out = response.getWriter()) {
-            String email = request.getParameter("resetEmail");
-
-            request.getSession().setAttribute("resetResponse", "PING: " + email);
-            response.sendRedirect("Login");
-//            rd.forward(request, response);
+            RequestDispatcher rd = request.getRequestDispatcher("home.jsp");
+            rd.include(request, response);
         }
     }
 
