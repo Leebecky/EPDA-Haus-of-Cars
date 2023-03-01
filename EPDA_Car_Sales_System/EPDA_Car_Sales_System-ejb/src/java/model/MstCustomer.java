@@ -45,7 +45,7 @@ public class MstCustomer extends MstMember implements Serializable {
         this.email = email;
         this.password = password;
         this.userType = "Customer";
-        this.status = "Active";
+        this.status = "Inactive";
     }
 
     // Getters & Setters

@@ -5,32 +5,22 @@
  */
 package controller;
 
-import facade.MstCustomerFacade;
-import facade.MstMemberFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.MstCustomer;
-import model.MstMember;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Login", urlPatterns = {"/Login"})
-public class Login extends HttpServlet {
-
-    @EJB
-    MstMemberFacade memberFacade = new MstMemberFacade();
-    @EJB
-    MstCustomerFacade customerFacade = new MstCustomerFacade();
+@WebServlet(name = "Admin_Home", urlPatterns = {"/Admin_Home"})
+public class Admin_Home extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,39 +33,17 @@ public class Login extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String email = request.getParameter("email");
-            String password = request.getParameter("password");
-
-            MstMember member = memberFacade.loginUser(email, password);
-
-            if (member == null) {
-                request.getSession().setAttribute("error", "No account with these credentials found!");
-                response.sendRedirect("Login");
-//                rd.forward(request, response);
-                return;
-            } else {
-                // On Success, Redirect to Customer Home
-                HttpSession ses = request.getSession();
-
-                member.setPassword("");
-                ses.setAttribute("user", member);
-                if (member.getUserType().equals("Admin")) {
-                    response.sendRedirect("Admin_Home");
-                } else {
-                    response.sendRedirect("Home");
-                }
-
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifyAdmin(request);
+            if (!auth.isEmpty()) {
+                response.sendRedirect(auth);
                 return;
             }
 
-        } catch (Exception ex) {
-            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            response.sendRedirect("Login");
-//            rd.forward(request, response);
-            return;
+            RequestDispatcher rd = request.getRequestDispatcher("admin_home.jsp");
+            rd.include(request, response);
         }
     }
 
@@ -91,9 +59,7 @@ public class Login extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        processRequest(request, response);
-        RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
-        rd.include(request, response);
+        processRequest(request, response);
     }
 
     /**

@@ -38,7 +38,9 @@ public class MstMember implements Serializable {
     protected String email;
     protected String telNo;
     protected String address;
+    protected String gender;
     protected LocalDate dob;
+    protected String profileImage;
 
     protected String userType;
     protected String status;
@@ -153,6 +155,24 @@ public class MstMember implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+    
+    
 
     @Override
     public int hashCode() {

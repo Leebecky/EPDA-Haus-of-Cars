@@ -66,7 +66,7 @@
             
             <div class="mx-4">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h1 class="">User Management</h1>
+                    <h1 class="">Salesman Sales Commission</h1>
 
                     <a href="User_Profile?mode=New" role="button"
                         class="btn btn-outline-primary my-2 bi bi-pencil-square" style="font-size: 1.5rem;">New</a>

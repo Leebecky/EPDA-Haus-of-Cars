@@ -6,6 +6,7 @@
 package controller;
 
 import facade.MstMemberFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.MstMember;
 
 /**
@@ -39,15 +41,24 @@ public class Admin_Manage_Users extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        // Authenticating User Privileges
+        String auth = Session_Authenticator.VerifyAdmin(request);
+        if (!auth.isEmpty()) {
+            response.sendRedirect(auth);
+            return;
+        }
+
         response.setContentType("text/html;charset=UTF-8");
         RequestDispatcher rd = request.getRequestDispatcher("admin_manage_users.jsp");
         try (PrintWriter out = response.getWriter()) {
             List<MstMember> memberData = memberFacade.getAllUsers("");
 
-            request.setAttribute("model",memberData);
-            rd.forward(request, response);
+            request.setAttribute("model", memberData);
+            rd.include(request, response);
 
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -6,6 +6,7 @@
 package controller;
 
 import facade.MstMemberFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
@@ -39,8 +40,17 @@ public class Admin_Delete_User extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
+
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifyAdmin(request);
+            if (!auth.isEmpty()) {
+                response.sendRedirect(auth);
+                return;
+            }
+
             String userId = request.getParameter("userId");
 
             MstMember member = memberFacade.find(userId);
