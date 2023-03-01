@@ -30,6 +30,7 @@ public class MstCar implements Serializable {
     private String colour;
     private String transmissionType;
     private String status;
+    private String carImage;
     private double price;
     private int capacity;
     private int age;
@@ -114,6 +115,16 @@ public class MstCar implements Serializable {
     public void setAge(int age) {
         this.age = age;
     }
+
+    public String getCarImage() {
+        return carImage;
+    }
+
+    public void setCarImage(String carImage) {
+        this.carImage = carImage;
+    }
+    
+    
 
     @Override
     public int hashCode() {

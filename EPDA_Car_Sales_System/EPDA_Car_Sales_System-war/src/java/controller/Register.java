@@ -44,36 +44,52 @@ public class Register extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+//        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
 
         try (PrintWriter out = response.getWriter()) {
             // Registration Verification
             String username = request.getParameter("username");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
+            String userRole = request.getParameter("userRole");
 
             MstMember member = memberFacade.getUser(email);
             if (member == null) {
-                MstCustomer cus = MstCustomer.createNewCustomer(username, email, password);
-                customerFacade.create(cus);
+                if (userRole.equals("Customer")) {
 
-                // On Success, Redirect to Customer Home
-                MstMember loggedInUser = memberFacade.getUser(email);
+                    MstCustomer cus = MstCustomer.createNewCustomer(username, email, password);
+                    customerFacade.create(cus);
 
-                HttpSession ses = request.getSession();
-                ses.setAttribute("user", loggedInUser);
+                    // On Success, Redirect to Customer Home
+                    MstMember loggedInUser = memberFacade.getUser(email);
 
-                response.sendRedirect("home.jsp");
-                return;
+                    HttpSession ses = request.getSession();
+                    ses.setAttribute("user", loggedInUser);
+
+                    response.sendRedirect("Home");
+                } else {
+                    MstMember salesman = MstMember.createNewSalesman(username, email, password, "Inactive");
+                    memberFacade.create(salesman);
+
+                    // On Success, Redirect to Salesman Home
+                    MstMember loggedInUser = memberFacade.getUser(email);
+
+                    HttpSession ses = request.getSession();
+                    ses.setAttribute("user", loggedInUser);
+
+                    response.sendRedirect("Home");
+                }
+
             } else {
-                request.setAttribute("error", "This email already has an account!");
-                rd.forward(request, response);
+                request.getSession().setAttribute("error", "This email already has an account!");
+                response.sendRedirect("Register");
+//                rd.forward(request, response);
                 return;
             }
 
         } catch (Exception ex) {
-            request.setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            rd.forward(request, response);
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Register");
             return;
         }
     }
@@ -90,7 +106,8 @@ public class Register extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("register.jsp");
+        rd.include(request, response);
     }
 
     /**

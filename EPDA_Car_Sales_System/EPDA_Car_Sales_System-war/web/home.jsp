@@ -24,5 +24,6 @@
 
         <h1>Home page</h1>
         <p>Welcome, <%out.print(username);%></p>
+        ${sessionScope.user.userType}
     </body>
 </html>

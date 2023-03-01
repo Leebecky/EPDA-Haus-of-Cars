@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author leebe
  */
-@WebServlet(name = "ResetPassword", urlPatterns = {"/ResetPassword"})
-public class ResetPassword extends HttpServlet {
+@WebServlet(name = "Admin_Car_Details", urlPatterns = {"/Admin_Car_Details"})
+public class Admin_Car_Details extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,16 +30,11 @@ public class ResetPassword extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    //TODO IMPLEMENT
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
         try (PrintWriter out = response.getWriter()) {
-            String email = request.getParameter("resetEmail");
 
-            request.setAttribute("resetResponse", "PING: " + email);
-            rd.forward(request, response);
         }
     }
 
@@ -55,7 +50,12 @@ public class ResetPassword extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        RequestDispatcher rd = request.getRequestDispatcher("admin_car_details.jsp");
+
+        String id = request.getParameter("id");
+        request.setAttribute("id", id);
+        rd.include(request, response);
+//        processRequest(request, response);
     }
 
     /**

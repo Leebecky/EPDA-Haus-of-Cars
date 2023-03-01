@@ -57,7 +57,28 @@ public class MstMemberFacade extends AbstractFacade<MstMember> {
 
             return data;
         } catch (Exception e) {
-            System.out.println("MstMemberFacade - LoginUser : " + e.getMessage());
+            System.out.println("MstMemberFacade - loginUser : " + e.getMessage());
+            return null;
+        }
+    }
+
+    public List<MstMember> getAllUsers(String userType) {
+        try {
+
+            TypedQuery<MstMember> query = null;
+
+            if (userType.isEmpty()) {
+                query = em.createQuery("select m from MstMember m order by m.userType, m.fullname", MstMember.class);
+            } else {
+                query = em.createQuery("select m from MstMember m where m.userType = :role order by m.fullname", MstMember.class);
+                query.setParameter("role", userType);
+            }
+
+            List<MstMember> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("MstMemberFacade - getAllUsers : " + e.getMessage());
             return null;
         }
     }

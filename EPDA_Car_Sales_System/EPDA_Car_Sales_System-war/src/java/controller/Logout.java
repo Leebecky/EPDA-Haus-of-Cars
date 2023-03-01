@@ -37,7 +37,7 @@ public class Logout extends HttpServlet {
             HttpSession session = request.getSession();
             session.invalidate();
             
-            response.sendRedirect("home.jsp");
+            response.sendRedirect("Home");
         }
     }
 
