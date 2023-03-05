@@ -38,7 +38,7 @@ public class Session_Authenticator {
             }
             return "";
         } catch (Exception ex) {
-            System.out.println("Session_Authenticator: VerifyUser: " + ex.getMessage());
+            System.out.println("Session_Authenticator: VerifyAdmin: " + ex.getMessage());
             return "Login";
         }
     }
@@ -66,7 +66,7 @@ public class Session_Authenticator {
             }
             return "";
         } catch (Exception ex) {
-            System.out.println("Session_Authenticator: VerifyUser: " + ex.getMessage());
+            System.out.println("Session_Authenticator: VerifySalesman: " + ex.getMessage());
             return "Login";
         }
     }
@@ -94,8 +94,30 @@ public class Session_Authenticator {
             }
             return "";
         } catch (Exception ex) {
-            System.out.println("Session_Authenticator: VerifyUser: " + ex.getMessage());
+            System.out.println("Session_Authenticator: VerifyCustomer: " + ex.getMessage());
             return "Login";
+        }
+    }
+    
+    /**
+     * *
+     * @param req
+     * @return String Checks if the user is logged in. Returns
+     * the user role
+     */
+    public static String VerifyLogin(HttpServletRequest req) {
+        HttpSession ses = req.getSession(false);
+        try {
+            // Authenticating User Privileges
+            if (ses.getAttribute("user") == null) {
+                return "";
+            } else {
+                MstMember user = (MstMember) ses.getAttribute("user");
+                return user.getUserType();
+            }            
+        } catch (Exception ex) {
+            System.out.println("Session_Authenticator: VerifyLogin: " + ex.getMessage());
+            return "";
         }
     }
 }
