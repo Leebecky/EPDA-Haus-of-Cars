@@ -1,17 +1,12 @@
 <%-- 
-    Document   : home
+    Document   : catalogue_cars
     Created on : 02-Feb-2023, 17:10:25
     Author     : leebe
 --%>
-
-<%@page import="model.MstMember"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%
-    MstMember user = (session.getAttribute("user") != null) ? (MstMember) session.getAttribute("user") : new MstMember();
-    String username = user.getUsername();
-    System.out.println(user);
-%>
 
 <!DOCTYPE html>
 <html>

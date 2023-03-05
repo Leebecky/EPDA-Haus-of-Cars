@@ -90,12 +90,7 @@
                 <div class="col-md-6 col-lg-4">
                     <div class="login-wrap p-0">
                         <h3 class="mb-4 text-center">Have an account?</h3>
-
-                        <c:if test="${not empty error}">
-                            <b class="text-danger text-center">${sessionScope.error}</b>
-                            <c:remove var="error" scope="session"/>
-                        </c:if>
-
+               
                         <form action="Login" method="POST">
                             <!-- Email -->
                             <div class="form-group mb-3">

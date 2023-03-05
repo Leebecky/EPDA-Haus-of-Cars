@@ -7,6 +7,7 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,6 +45,7 @@ public class MstMember implements Serializable {
 
     protected String userType;
     protected String status;
+    
 
     // Constructor
     public MstMember() {
@@ -60,6 +62,7 @@ public class MstMember implements Serializable {
     public static MstMember createNewSalesman(String username, String email, String password, String userStatus) {
         MstMember salesman = new MstMember();
         salesman.username = username;
+        salesman.fullname = username;
         salesman.email = email;
         salesman.password = password;
         salesman.userType = "Salesman";

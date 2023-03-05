@@ -5,21 +5,27 @@
  */
 package controller;
 
+import facade.MstCarFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Catalogue_Cars_Details", urlPatterns = {"/Catalogue_Cars_Details"})
-public class Catalogue_Cars_Details extends HttpServlet {
+@WebServlet(name = "Admin_Car_Delete", urlPatterns = {"/Admin_Car_Delete"})
+public class Admin_Car_Delete extends HttpServlet {
+
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,9 +38,29 @@ public class Catalogue_Cars_Details extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
 
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifyAdmin(request);
+            if (!auth.isEmpty()) {
+                response.sendRedirect(auth);
+                return;
+            }
+
+            String carId = request.getParameter("carId");
+
+            MstCar car = carFacade.find(carId);
+            carFacade.remove(car);
+            
+            request.getSession().setAttribute("msg", "Car successfully deleted");
+            response.sendRedirect("Admin_Manage_Cars");
+            
+        } catch (Exception ex) {
+            System.out.println("Admin_Delete_Car: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Admin_Manage_Cars");
         }
     }
 
@@ -50,10 +76,7 @@ public class Catalogue_Cars_Details extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars_details.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**

@@ -42,10 +42,11 @@ public class MstCustomer extends MstMember implements Serializable {
 
     public MstCustomer(String username, String email, String password) {
         this.username = username;
+        this.fullname = username;
         this.email = email;
         this.password = password;
         this.userType = "Customer";
-        this.status = "Inactive";
+        this.status = "Pending";
     }
 
     // Getters & Setters

@@ -55,11 +55,18 @@ public class Admin_Delete_User extends HttpServlet {
 
             MstMember member = memberFacade.find(userId);
             memberFacade.remove(member);
-            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();
-            response.getWriter().write(json.toString());
+//            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();
+//            response.getWriter().write(json.toString());
+            
+            request.getSession().setAttribute("msg", "User successfully deleted");
+            response.sendRedirect("Admin_Manage_Users");
+            
         } catch (Exception ex) {
-            JsonObject json = Json.createObjectBuilder().add("msg", "Error deleting user: " + ex.getMessage()).build();
-            response.getWriter().write(json.toString());
+            System.out.println("Admin_Delete_User: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Admin_Manage_Users");
+//            JsonObject json = Json.createObjectBuilder().add("msg", "Error deleting user: " + ex.getMessage()).build();
+//            response.getWriter().write(json.toString());
         }
     }
 

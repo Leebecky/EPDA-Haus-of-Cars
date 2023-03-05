@@ -19,3 +19,5 @@ integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="ano
 <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
 
 <link rel="stylesheet" href="_layout/epda_css.css">
+
+<script src="_layout/epda_scripts.js"></script>

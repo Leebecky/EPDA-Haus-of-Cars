@@ -51,16 +51,18 @@ public class Admin_Approve_User extends HttpServlet {
                 return;
             }
 
-            String userId = request.getParameter("userId");
+            String userId = request.getParameter("approveUserId");
 
             MstMember member = memberFacade.find(userId);
             member.setStatus("Approved");
             memberFacade.edit(member);
-            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();
-            response.getWriter().write(json.toString());
+           
+            request.getSession().setAttribute("msg", "User successfully approved");
+            response.sendRedirect("Admin_Manage_Users");
         } catch (Exception ex) {
-            JsonObject json = Json.createObjectBuilder().add("msg", "Error approving user: " + ex.getMessage()).build();
-            response.getWriter().write(json.toString());
+            System.out.println("Admin_Approve_User: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Admin_Manage_Users");
         }
     }
 

@@ -24,7 +24,7 @@ public class MstCar implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String carId;
-    private String carNumber;
+//    private String carNumber;
     private String model;
     private String brand;
     private String colour;
@@ -33,7 +33,7 @@ public class MstCar implements Serializable {
     private String carImage;
     private double price;
     private int capacity;
-    private int age;
+//    private int age;
 
     // Getters & Setters
     public String getCarId() {
@@ -44,13 +44,13 @@ public class MstCar implements Serializable {
         this.carId = carId;
     }
 
-    public String getCarNumber() {
-        return carNumber;
-    }
-
-    public void setCarNumber(String carNumber) {
-        this.carNumber = carNumber;
-    }
+//    public String getCarNumber() {
+//        return carNumber;
+//    }
+//
+//    public void setCarNumber(String carNumber) {
+//        this.carNumber = carNumber;
+//    }
 
     public String getModel() {
         return model;
@@ -107,14 +107,14 @@ public class MstCar implements Serializable {
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
+//
+//    public int getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(int age) {
+//        this.age = age;
+//    }
 
     public String getCarImage() {
         return carImage;

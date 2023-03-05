@@ -5,7 +5,7 @@
  */
 package controller;
 
-import facade.MstMemberFacade;
+import facade.MstCarFacade;
 import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,8 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import model.MstMember;
+import model.MstCar;
 
 /**
  *
@@ -28,7 +27,7 @@ import model.MstMember;
 public class Admin_Manage_Cars extends HttpServlet {
 
     @EJB
-    MstMemberFacade memberFacade;
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,11 +51,12 @@ public class Admin_Manage_Cars extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         RequestDispatcher rd = request.getRequestDispatcher("admin_manage_cars.jsp");
         try (PrintWriter out = response.getWriter()) {
-            List<MstMember> memberData = memberFacade.getAllUsers("");
-
-            request.setAttribute("model", memberData);
+            List<MstCar> data = carFacade.findAll();
+            request.setAttribute("model", data);
             rd.include(request, response);
 
+        } catch (Exception ex) {
+            System.out.println("Admin_Manage_Cars: processRequest: " +ex.getMessage());
         }
 
     }
