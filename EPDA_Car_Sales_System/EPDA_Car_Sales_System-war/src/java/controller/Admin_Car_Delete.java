@@ -50,7 +50,7 @@ public class Admin_Car_Delete extends HttpServlet {
             }
 
             String carId = request.getParameter("carId");
-
+//            System.out.println("CAR: "+carId);
             MstCar car = carFacade.find(carId);
             carFacade.remove(car);
             

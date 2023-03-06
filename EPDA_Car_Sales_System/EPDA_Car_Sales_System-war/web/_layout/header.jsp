@@ -68,6 +68,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-light fs-5" href="Catalogue_Cars" aria-current="page">Catalogue</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light fs-5" href="Customer_Booking" aria-current="page">Transaction History</a>
+                        </li>
 
                     </ul>
                 </c:if>

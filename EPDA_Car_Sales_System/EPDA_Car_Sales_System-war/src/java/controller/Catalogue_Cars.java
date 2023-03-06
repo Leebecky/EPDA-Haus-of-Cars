@@ -5,14 +5,18 @@
  */
 package controller;
 
+import facade.MstCarFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
 
 /**
  *
@@ -20,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "Catalogue_Cars", urlPatterns = {"/Catalogue_Cars"})
 public class Catalogue_Cars extends HttpServlet {
-
+@EJB
+MstCarFacade carFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,8 +38,14 @@ public class Catalogue_Cars extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+          RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
         try (PrintWriter out = response.getWriter()) {
+            List<MstCar> data = carFacade.findAll();
+            request.setAttribute("model", data);
+            rd.include(request, response);
 
+        } catch (Exception ex) {
+            System.out.println("Catalogue_Cars: " + ex.getMessage());
         }
     }
 
@@ -50,10 +61,10 @@ public class Catalogue_Cars extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+//        RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
+//
+//        rd.include(request, response);
+        processRequest(request, response);
     }
 
     /**

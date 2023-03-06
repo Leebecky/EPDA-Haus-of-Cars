@@ -5,14 +5,18 @@
  */
 package controller;
 
+import facade.MstCarFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static jdk.nashorn.internal.runtime.Debug.id;
+import model.MstCar;
 
 /**
  *
@@ -21,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "Catalogue_Cars_Details", urlPatterns = {"/Catalogue_Cars_Details"})
 public class Catalogue_Cars_Details extends HttpServlet {
 
+    @EJB
+    MstCarFacade carFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,8 +39,10 @@ public class Catalogue_Cars_Details extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+          RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars_details.jsp");
         try (PrintWriter out = response.getWriter()) {
-
+       
+            rd.include(request, response);
         }
     }
 
@@ -51,8 +59,19 @@ public class Catalogue_Cars_Details extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars_details.jsp");
-
-        rd.include(request, response);
+        
+        try (PrintWriter out = response.getWriter()) {
+            String carId = request.getParameter("id");
+            MstCar data = carFacade.find(carId);
+            
+            request.setAttribute("carId", carId);
+            request.setAttribute("model", data);
+            
+            rd.include(request, response);
+        } catch (Exception ex) {
+            System.out.println("Catalogue_Cars_Details:" +ex.getMessage());            
+        }
+        
 //        processRequest(request, response);
     }
 

@@ -5,23 +5,32 @@
  */
 package controller;
 
+import facade.MstCarFacade;
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.RequestDispatcher;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
+import model.TxnSalesRecord;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Catalogue_Comparison", urlPatterns = {"/Catalogue_Comparison"})
-public class Catalogue_Comparison extends HttpServlet {
+@WebServlet(name = "Customer_Booking_Cancel", urlPatterns = {"/Customer_Booking_Cancel"})
+public class Customer_Booking_Cancel extends HttpServlet {
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
+    
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,23 +43,40 @@ public class Catalogue_Comparison extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            String carId = request.getParameter("carId");
 
-            ArrayList<String> comparisonList = (ArrayList<String>) request.getSession().getAttribute("comparison");
-            if (comparisonList == null) {
-                comparisonList = new ArrayList<>();
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifyCustomer(request);
+            if (!auth.isEmpty()) {
+                request.getSession().setAttribute("error", "Error: User not authenticated");
+                response.sendRedirect(auth);
+                return;
             }
-            comparisonList.add(carId);
 
-            request.getSession().setAttribute("comparison", comparisonList);
-
-            response.sendRedirect("Catalogue_Cars");
+            String salesId = request.getParameter("salesId");
+            System.out.println("SALES: "+salesId);
+            
+            TxnSalesRecord sales = salesFacade.find(salesId);
+            sales.setOrderStatus("Cancelled");
+            
+            System.out.println("Sales: " + sales);
+            System.out.println("Sales: " + sales.getCar());
+            
+            MstCar car = sales.getCar();
+            car.setStatus("Available");
+            
+            salesFacade.edit(sales);
+            carFacade.edit(car);
+            
+            request.getSession().setAttribute("msg", "Booking successfully cancelled");
+            response.sendRedirect("Customer_Booking");
+            
         } catch (Exception ex) {
-            System.out.println("Catalogue_Comparison: processRequest: " + ex.getMessage());
-            request.getSession().setAttribute("error", "Unexpected error occurred: " + ex.getMessage());
-            response.sendRedirect("Catalogue_Cars");
+            System.out.println("Customer_Booking_Cancel: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Customer_Booking");
         }
     }
 
@@ -66,10 +92,7 @@ public class Catalogue_Comparison extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("catalogue_comparison.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**

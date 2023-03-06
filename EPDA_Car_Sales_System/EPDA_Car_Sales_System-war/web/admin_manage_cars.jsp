@@ -29,7 +29,7 @@
             function deleteCarData(carId) {
                 let req = confirm("Are you sure you want to delete car: " + carId + "?");
                 if (req) {
-                    $("#frmDeleteCar").submit();                  
+                    $("#frmDeleteCar-"+carId).submit();                  
                 }
             }
         </script>
@@ -86,7 +86,7 @@
                                    style="font-size: 1.5rem;"> Edit</a>
 
                                 <!-- Delete -->
-                                <form id="frmDeleteCar" action="Admin_Car_Delete" method="post" class="btn">
+                                <form id="frmDeleteCar-${data.carId}" action="Admin_Car_Delete" method="post" class="btn">
                                     <input type="hidden" name="carId" value="${data.carId}">
                                     <button type="button" class="btn btn-outline-danger bi bi-trash3-fill"
                                             style="font-size: 1.5rem;" onclick="deleteCarData('${data.carId}')">

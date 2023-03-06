@@ -64,8 +64,10 @@ public class Login extends HttpServlet {
                 ses.setAttribute("user", member);
                 if (member.getUserType().equals("Admin")) {
                     response.sendRedirect("Admin_Home");
+                } else if (member.getUserType().equals("Salesman")) {
+                    response.sendRedirect("Salesman_Home");
                 } else {
-                    response.sendRedirect("Home");
+                    response.sendRedirect("Catalogue_Cars");
                 }
 
                 return;

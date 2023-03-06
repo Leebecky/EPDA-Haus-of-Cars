@@ -40,10 +40,10 @@
                     // }
 
                     // delete user
-                    function deleteUserData(email) {
+                    function deleteUserData(email,userId) {
                         let req = confirm("Are you sure you want to delete user: " + email + "?");
                         if (req) {
-                            $("#frmDeleteUser").submit();
+                            $("#frmDeleteUser-"+userId).submit();
                             // $.post("Admin_Delete_User", $.param({ "userId": userId }), function (response) {
                             //     rep = JSON.parse(response);
                             //     if (rep.msg == "Success") {
@@ -102,10 +102,10 @@
 
                                             <c:if test="${data.status != 'Approved'}">
                                                 <!-- Approve -->
-                                                <form id="frmApproveUser" action="Admin_Approve_User" method="post" class="btn">
+                                                <form id="frmApproveUser-${data.userId}" action="Admin_Approve_User" method="post" class="btn">
                                                     <input type="hidden" name="approveUserId" value="${data.userId}">
                                                     <button type="submit" class="btn btn-outline-success bi bi-check-lg"
-                                                        style="font-size: 1.5rem;" form="frmApproveUser">
+                                                        style="font-size: 1.5rem;" form="frmApproveUser-${data.userId}">
                                                         Approve</button>
                                                 </form>
                                             </c:if>
@@ -117,12 +117,12 @@
 
                                             <!-- Delete -->
                                             <c:if test="${data.userId != user.userId}">
-                                                <form id="frmDeleteUser" action="Admin_Delete_User" method="post" class="btn">
+                                                <form id="frmDeleteUser-${data.userId}" action="Admin_Delete_User" method="post" class="btn">
                                                     <input type="hidden" name="userId" value="${data.userId}">
                                                     <button type="button"
                                                         class="btn btn-outline-danger bi bi-trash3-fill"
                                                         style="font-size: 1.5rem;"
-                                                        onclick="deleteUserData('${data.email}')" form="frmDeleteUser">
+                                                        onclick="deleteUserData('${data.email}', '${data.userId}')" form="frmDeleteUser">
                                                         Delete</button>
                                                 </form>
                                             </c:if>

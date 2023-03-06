@@ -5,23 +5,34 @@
  */
 package controller;
 
+import facade.MstCarFacade;
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.RequestDispatcher;
+import java.time.LocalDateTime;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
+import model.MstCustomer;
+import model.TxnSalesRecord;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Catalogue_Comparison", urlPatterns = {"/Catalogue_Comparison"})
-public class Catalogue_Comparison extends HttpServlet {
+@WebServlet(name = "Customer_Create_Booking", urlPatterns = {"/Customer_Create_Booking"})
+public class Customer_Create_Booking extends HttpServlet {
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
+
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,20 +46,45 @@ public class Catalogue_Comparison extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+//         RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
+
         try (PrintWriter out = response.getWriter()) {
-            String carId = request.getParameter("carId");
 
-            ArrayList<String> comparisonList = (ArrayList<String>) request.getSession().getAttribute("comparison");
-            if (comparisonList == null) {
-                comparisonList = new ArrayList<>();
+            String auth = Session_Authenticator.VerifyCustomer(request);
+            if (auth != null && !auth.isEmpty()) {
+                request.getSession().setAttribute("error", "Please login as a customer to create a booking!");
+                response.sendRedirect("Login");
+                return;
             }
-            comparisonList.add(carId);
 
-            request.getSession().setAttribute("comparison", comparisonList);
+            String carId = request.getParameter("carId");
+            MstCar car = carFacade.find(carId);
+
+            MstCustomer customer = (MstCustomer) request.getSession().getAttribute("user");
+
+            if (car != null) {
+
+                car.setStatus("Booked");
+
+                TxnSalesRecord booking = new TxnSalesRecord();
+                booking.setCar(car);
+                booking.setOrderStatus("Booked");
+                booking.setSalesDate(LocalDateTime.now());
+                booking.setCustomer(customer);
+                booking.setRating(0);
+                booking.setTotalPayable(car.getPrice() + TxnSalesRecord.getBookingFee());
+
+                carFacade.edit(car);
+                salesFacade.create(booking);
+                request.getSession().setAttribute("msg", "Booking created");
+            } else {
+                request.getSession().setAttribute("error", "Car not found");
+            }
 
             response.sendRedirect("Catalogue_Cars");
+
         } catch (Exception ex) {
-            System.out.println("Catalogue_Comparison: processRequest: " + ex.getMessage());
+            System.out.println("Customer_Create_Booking: " + ex.getMessage());
             request.getSession().setAttribute("error", "Unexpected error occurred: " + ex.getMessage());
             response.sendRedirect("Catalogue_Cars");
         }
@@ -66,10 +102,7 @@ public class Catalogue_Comparison extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("catalogue_comparison.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**

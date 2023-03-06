@@ -22,19 +22,21 @@ import javax.persistence.ManyToOne;
 public class TxnSalesRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
+    private static final double bookingFee = 15;
+
     // Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String salesId;
     private MstCar car;
-    
+
     @ManyToOne
     private MstCustomer customer;
-    
+
     @ManyToOne
     private MstMember salesman;
-   
+
     private double totalPayable;
     private String orderStatus;
     private String salesmanComments;
@@ -46,11 +48,14 @@ public class TxnSalesRecord implements Serializable {
     public String getSalesId() {
         return salesId;
     }
+    
+    public static Double getBookingFee() {
+        return bookingFee;
+    }
 
 //    public void setSalesId(String salesId) {
 //        this.salesId = salesId;
 //    }
-
     public MstCar getCar() {
         return car;
     }
@@ -147,5 +152,5 @@ public class TxnSalesRecord implements Serializable {
     public String toString() {
         return "model.Sales_Record[ id=" + salesId + " ]";
     }
-    
+
 }

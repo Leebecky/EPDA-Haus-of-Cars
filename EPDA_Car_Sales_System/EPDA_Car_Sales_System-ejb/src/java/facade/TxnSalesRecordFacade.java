@@ -5,9 +5,11 @@
  */
 package facade;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import model.TxnSalesRecord;
 
 /**
@@ -29,4 +31,17 @@ public class TxnSalesRecordFacade extends AbstractFacade<TxnSalesRecord> {
         super(TxnSalesRecord.class);
     }
     
+    public List<TxnSalesRecord> getSalesByCustomer(String customerId) {
+        try {
+
+            Query query = em.createQuery("select m from TxnSalesRecord m where m.customer.userId = :customerId", TxnSalesRecord.class);
+            query.setParameter("customerId", customerId);
+            List<TxnSalesRecord> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("TxnSalesRecordFacade - getSalesByCustomer : " + e.getMessage());
+            return null;
+        }
+    }
 }

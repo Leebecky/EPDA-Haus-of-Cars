@@ -52,7 +52,7 @@ public class Admin_Delete_User extends HttpServlet {
             }
 
             String userId = request.getParameter("userId");
-
+            System.out.println("USER: "+ userId);
             MstMember member = memberFacade.find(userId);
             memberFacade.remove(member);
 //            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();

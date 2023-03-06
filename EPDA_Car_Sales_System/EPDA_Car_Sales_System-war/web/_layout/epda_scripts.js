@@ -11,7 +11,7 @@ function customAlert(msg, alertType) {
         `<div class="alert ${alertColour} d-flex justify-content-between " role="alert">`,
         `${msg}`,
         `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`
-    ].join('')
+].join('')
 
     alertPlaceholder.append(wrapper)
     window.scrollTo(0,0)

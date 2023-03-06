@@ -144,10 +144,9 @@
                         <div class="col-md-3 border-right">
                             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                                 <div class="profile-container">
-
                                     <img class="profile-image rounded-circle mt-5" alt="User Profile Image" src="
                                  <c:choose>
-                                     <c:when test=" ${model.profileImage !=null && !model.profileImage.isEmpty()}">
+                                     <c:when test="${model.profileImage !=null && !model.profileImage.isEmpty()}">
                                     ${model.profileImage}
                                     </c:when>
                                     <c:otherwise>

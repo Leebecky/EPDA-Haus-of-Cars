@@ -5,23 +5,32 @@
  */
 package controller;
 
+import com.google.gson.Gson;
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCustomer;
+import model.TxnSalesRecord;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Catalogue_Comparison", urlPatterns = {"/Catalogue_Comparison"})
-public class Catalogue_Comparison extends HttpServlet {
+@WebServlet(name = "Customer_Booking", urlPatterns = {"/Customer_Booking"})
+public class Customer_Booking extends HttpServlet {
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,24 +43,29 @@ public class Catalogue_Comparison extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            String carId = request.getParameter("carId");
 
-            ArrayList<String> comparisonList = (ArrayList<String>) request.getSession().getAttribute("comparison");
-            if (comparisonList == null) {
-                comparisonList = new ArrayList<>();
-            }
-            comparisonList.add(carId);
-
-            request.getSession().setAttribute("comparison", comparisonList);
-
-            response.sendRedirect("Catalogue_Cars");
-        } catch (Exception ex) {
-            System.out.println("Catalogue_Comparison: processRequest: " + ex.getMessage());
-            request.getSession().setAttribute("error", "Unexpected error occurred: " + ex.getMessage());
-            response.sendRedirect("Catalogue_Cars");
+        // Authenticating User Privileges
+        String auth = Session_Authenticator.VerifyCustomer(request);
+        if (!auth.isEmpty()) {
+            
+            response.sendRedirect(auth);
+            return;
         }
+        
+        MstCustomer customer = (MstCustomer)request.getSession().getAttribute("user");
+
+        response.setContentType("text/html;charset=UTF-8");
+        RequestDispatcher rd = request.getRequestDispatcher("customer_booking.jsp");
+        try (PrintWriter out = response.getWriter()) {
+            List<TxnSalesRecord> data = salesFacade.getSalesByCustomer(customer.getUserId());
+
+            request.setAttribute("model", data);
+            rd.include(request, response);
+
+        } catch (Exception ex) {
+            System.out.println("Customer_Booking: processRequest: " +ex.getMessage());
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -66,10 +80,7 @@ public class Catalogue_Comparison extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("catalogue_comparison.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**
