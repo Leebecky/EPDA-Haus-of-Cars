@@ -5,21 +5,32 @@
  */
 package controller;
 
+import facade.MstCarFacade;
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import model.MstCar;
+import model.TxnSalesRecord;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Logout", urlPatterns = {"/Logout"})
-public class Logout extends HttpServlet {
+@WebServlet(name = "Sls_Booking_Paid", urlPatterns = {"/Sls_Booking_Paid"})
+public class Sls_Booking_Paid extends HttpServlet {
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
+    
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,12 +43,40 @@ public class Logout extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            session.invalidate();
+
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifySalesman(request);
+            if (!auth.isEmpty()) {
+                request.getSession().setAttribute("error", "Error: User not authenticated");
+                response.sendRedirect(auth);
+                return;
+            }
+
+            String salesId = request.getParameter("salesId");
+//            System.out.println("SALES: "+salesId);
             
-            response.sendRedirect("Catalogue_Cars");
+            TxnSalesRecord sales = salesFacade.find(salesId);
+            sales.setOrderStatus("Paid");
+            
+//            System.out.println("Sales: " + sales);
+//            System.out.println("Sales: " + sales.getCar());
+            
+            MstCar car = sales.getCar();
+            car.setStatus("Paid");
+            
+            salesFacade.edit(sales);
+            carFacade.edit(car);
+            
+            request.getSession().setAttribute("msg", "Booking has been paid");
+            response.sendRedirect("Sls_Manage_Sales");
+            
+        } catch (Exception ex) {
+            System.out.println("Sls_Manage_Sales_Cancel: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Sls_Manage_Sales");
         }
     }
 

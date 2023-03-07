@@ -44,4 +44,32 @@ public class TxnSalesRecordFacade extends AbstractFacade<TxnSalesRecord> {
             return null;
         }
     }
+    
+     public List<TxnSalesRecord> getSalesBySalesman(String salesmanId) {
+        try {
+
+            Query query = em.createQuery("select m from TxnSalesRecord m where m.salesman.userId = :salesmanId", TxnSalesRecord.class);
+            query.setParameter("salesmanId", salesmanId);
+            List<TxnSalesRecord> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("TxnSalesRecordFacade - getSalesBySalesman : " + e.getMessage());
+            return null;
+        }
+    }
+     
+     
+     public List<TxnSalesRecord> getPendingBookings() {
+        try {
+
+            Query query = em.createQuery("select m from TxnSalesRecord m where m.orderStatus = 'Pending Salesman'", TxnSalesRecord.class);
+            List<TxnSalesRecord> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("TxnSalesRecordFacade - getPendingBookings : " + e.getMessage());
+            return null;
+        }
+    }
 }

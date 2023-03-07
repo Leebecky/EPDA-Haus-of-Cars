@@ -146,7 +146,7 @@
                                 <div class="profile-container">
                                     <img class="profile-image rounded-circle mt-5" alt="User Profile Image" src="
                                  <c:choose>
-                                     <c:when test="${model.profileImage !=null && !model.profileImage.isEmpty()}">
+                                     <c:when test=" ${model.profileImage !=null && !model.profileImage.isEmpty()}">
                                     ${model.profileImage}
                                     </c:when>
                                     <c:otherwise>
@@ -223,6 +223,11 @@
                                                 <input type="text" class="form-control bg-dark-subtle" name="userRole"
                                                     value="${model.userType}" readonly>
                                             </div>
+                                        </c:if>
+
+                                        <c:if test="${sessionScope.user.userType != 'Admin'}">
+                                            <input type="hidden" name="userRole"
+                                                value="${model.userType}" readonly>
                                         </c:if>
 
                                         <div class="col-md-12">

@@ -42,9 +42,10 @@ public class Admin_Manage_Cars extends HttpServlet {
             throws ServletException, IOException {
 
         // Authenticating User Privileges
-        String auth = Session_Authenticator.VerifyAdmin(request);
-        if (!auth.isEmpty()) {
-            response.sendRedirect(auth);
+        String auth = Session_Authenticator.VerifyLogin(request);
+        if (auth.isEmpty() || auth.equals("Customer")) {
+            request.getSession().setAttribute("error", "Error: User not authenticated!");
+            response.sendRedirect("Login");
             return;
         }
 

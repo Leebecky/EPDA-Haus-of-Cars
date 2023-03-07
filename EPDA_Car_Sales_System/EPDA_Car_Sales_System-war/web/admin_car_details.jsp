@@ -56,7 +56,7 @@
                             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                                 <div class="profile-container">
 
-                                    <img class="profile-image mt-5" alt="User Profile Image"
+                                    <img class="profile-image mt-5" alt="Car Image"
                                         style="border-radius: 25px 0px 25px 0px;" src="
                                  <c:choose>
                                      <c:when test='${model.carImage != null && !model.carImage.isEmpty()}'>
@@ -67,7 +67,7 @@
                                     </c:otherwise>
                                     </c:choose>">
 
-                                    <c:if test="${mode != 'New'}">
+                                    <c:if test="${mode == 'Edit'}">
                                         <button id="btnCarImage" class="profile-overlay mt-5"
                                             style="border-radius: 25px 0px 25px 0px;" type="button">
                                             <div class="profile-overlay-text">Update Image?</div>
@@ -79,10 +79,9 @@
                                 <form id="frmCarImage" action="Admin_Car_Details" method="post"
                                     enctype="multipart/form-data">
                                     <input type="hidden" name="carUpdateType" value="imageUpdate">
-                                       <input type="hidden" name="id" value="${id}">
+                                    <input type="hidden" name="id" value="${id}">
                                     <input type="hidden" name="mode" value="${mode}">
-                                    <input type="file" id="carImage" name="carImage" class="d-none"
-                                        accept="image/*">
+                                    <input type="file" id="carImage" name="carImage" class="d-none" accept="image/*">
                                 </form>
                             </div>
                         </div>
@@ -114,7 +113,7 @@
                                         <div class="col-md-12">
                                             <label class="labels">Brand</label>
                                             <input type="text" class="form-select" id="carBrand" name="brand"
-                                                list="car-brand" required />
+                                                list="car-brand" required <c:if test="${mode == 'View'}">disabled</c:if>/>
                                             <datalist id="car-brand">
                                                 <option value="Toyota">Toyota</option>
                                                 <option value="Honda">Honda</option>
@@ -125,13 +124,13 @@
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Model</label>
                                             <input type="text" class="form-control" placeholder="Model" name="model"
-                                                value="${model.model}" required>
+                                                value="${model.model}" required <c:if test="${mode == 'View'}">disabled</c:if>>
                                         </div>
 
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Colour</label>
                                             <input type="text" class="form-select" id="carColour" name="colour"
-                                                list="car-colour" required />
+                                                list="car-colour" required <c:if test="${mode == 'View'}">disabled</c:if>/>
                                             <datalist id="car-colour">
                                                 <option value="Red">Red</option>
                                                 <option value="Blue">Blue</option>
@@ -142,7 +141,7 @@
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Transmission Type</label>
                                             <select class="form-select" id="carTransmissionType" name="transmissionType"
-                                                required>
+                                                required <c:if test="${mode == 'View'}">disabled</c:if>>
                                                 <option value="Auto">Auto</option>
                                                 <option value="Manual">Manual</option>
                                             </select>
@@ -164,12 +163,12 @@
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Price</label>
                                             <input type="number" min="1" step="0.01" class="form-control" name="price"
-                                                placeholder="Price" value="${model.price}" required>
+                                                placeholder="Price" value="${model.price}" required <c:if test="${mode == 'View'}">disabled</c:if>/>
                                         </div>
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Capacity</label>
                                             <input type="number" min="2" step="1" name="capacity" class="form-control"
-                                                placeholder="Capacity" value="${model.capacity}" required>
+                                                placeholder="Capacity" value="${model.capacity}" required <c:if test="${mode == 'View'}">disabled</c:if>/>
                                         </div>
 
 
@@ -180,8 +179,10 @@
                                                 class="btn btn-outline-secondary bi bi-arrow-left-circle me-2">
                                                 Back</a>
 
-                                            <button class="btn btn-primary profile-button" type="submit">Save
-                                                Details</button>
+                                            <c:if test="${mode != 'View'}">
+                                                <button class="btn btn-primary profile-button" type="submit">Save
+                                                    Details</button>
+                                            </c:if>
 
                                         </div>
                                     </form>

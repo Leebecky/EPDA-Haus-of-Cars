@@ -14,7 +14,7 @@
 
                         $(document).ready(function () {
                             // Table
-                            $("#carTable").fancyTable({
+                            $("#salesTable").fancyTable({
                                 sortColumn: 0,
                                 pagination: true,
                                 perPage: 10,
@@ -45,7 +45,7 @@
                             <h1 class="">Transaction History</h1>
                         </div>
 
-                        <table id="carTable" class="table table-striped align-middle">
+                        <table id="salesTable" class="table table-striped align-middle">
                             <thead class="table-dark">
                                 <tr>
                                     <th scope="col">#</th>
@@ -76,13 +76,14 @@
                                         <td>${data.orderStatus}</td>
                                         <td style="text-align: end;">
 
-                                            <!-- View -->
-                                            <a href="Customer_Booking_Details?mode=View&id=${data.salesId}"
-                                                role="button" class="btn btn-outline-warning bi bi-card-text me-2"
-                                                style="font-size: 1.5rem;"> View</a>
+                                            <!-- Review -->
+                                            <a href="Booking_Details?mode=Review&id=${data.salesId}" role="button"
+                                                class="btn btn-outline-warning bi bi-card-text me-2"
+                                                style="font-size: 1.5rem;"> Review</a>
 
                                             <!-- Cancel -->
-                                            <c:if test="${!data.orderStatus.equals('Cancelled')}">
+                                            <c:if
+                                                test="${data.orderStatus.equals('Pending Salesman') || data.orderStatus.equals('Booked')}">
                                                 <form id="frmCancelBooking-${data.salesId}"
                                                     action="Customer_Booking_Cancel" method="post" class="btn">
                                                     <input type="hidden" name="salesId" value="${data.salesId}">
@@ -95,7 +96,18 @@
                                         </td>
                                     </tr>
                                 </c:forEach>
-
+                                <!-- If no data -->
+                                <c:if test="${model.size() == 0}">
+                                    <tr>
+                                        <td class="text-center">No data found</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </c:if>
                             </tbody>
                         </table>
                     </div>

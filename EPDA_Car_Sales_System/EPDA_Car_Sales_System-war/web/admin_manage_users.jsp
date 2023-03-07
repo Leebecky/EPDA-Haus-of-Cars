@@ -40,10 +40,10 @@
                     // }
 
                     // delete user
-                    function deleteUserData(email,userId) {
+                    function deleteUserData(email, userId) {
                         let req = confirm("Are you sure you want to delete user: " + email + "?");
                         if (req) {
-                            $("#frmDeleteUser-"+userId).submit();
+                            $("#frmDeleteUser-" + userId).submit();
                             // $.post("Admin_Delete_User", $.param({ "userId": userId }), function (response) {
                             //     rep = JSON.parse(response);
                             //     if (rep.msg == "Success") {
@@ -70,8 +70,8 @@
                             <h1 class="">User Management</h1>
 
                             <a href="User_Profile?id=-1&mode=New" role="button"
-                                class="btn btn-outline-primary my-2 bi bi-person-fill-add"
-                                style="font-size: 1.5rem;"> New</a>
+                                class="btn btn-outline-primary my-2 bi bi-person-fill-add" style="font-size: 1.5rem;">
+                                New</a>
                         </div>
 
                         <table id="userTable" class="table table-striped align-middle">
@@ -102,7 +102,8 @@
 
                                             <c:if test="${data.status != 'Approved'}">
                                                 <!-- Approve -->
-                                                <form id="frmApproveUser-${data.userId}" action="Admin_Approve_User" method="post" class="btn">
+                                                <form id="frmApproveUser-${data.userId}" action="Admin_Approve_User"
+                                                    method="post" class="btn">
                                                     <input type="hidden" name="approveUserId" value="${data.userId}">
                                                     <button type="submit" class="btn btn-outline-success bi bi-check-lg"
                                                         style="font-size: 1.5rem;" form="frmApproveUser-${data.userId}">
@@ -117,19 +118,32 @@
 
                                             <!-- Delete -->
                                             <c:if test="${data.userId != user.userId}">
-                                                <form id="frmDeleteUser-${data.userId}" action="Admin_Delete_User" method="post" class="btn">
+                                                <form id="frmDeleteUser-${data.userId}" action="Admin_Delete_User"
+                                                    method="post" class="btn">
                                                     <input type="hidden" name="userId" value="${data.userId}">
                                                     <button type="button"
                                                         class="btn btn-outline-danger bi bi-trash3-fill"
                                                         style="font-size: 1.5rem;"
-                                                        onclick="deleteUserData('${data.email}', '${data.userId}')" form="frmDeleteUser">
+                                                        onclick="deleteUserData('${data.email}', '${data.userId}')"
+                                                        form="frmDeleteUser">
                                                         Delete</button>
                                                 </form>
                                             </c:if>
                                         </td>
                                     </tr>
                                 </c:forEach>
-
+                                <!-- If no data -->
+                                <c:if test="${model.size() == 0}">
+                                    <tr>
+                                        <td class="text-center">No data found</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </c:if>
                             </tbody>
                         </table>
                     </div>

@@ -78,7 +78,7 @@
                                     <!-- <a class="btn btn-primary btn-sm" href="Catalogue_Cars_Details?id=${data.carId}">Details</a> -->
 
                                     <!-- Create Booking -->
-                                    <form action="Customer_Create_Booking" method="post" id="frmBooking">
+                                    <form action="Customer_Booking_Create" method="post" id="frmBooking">
                                         <input type="hidden" name="carId" value="${data.carId}">
                                         <button class="form-control btn btn-primary btn-sm" type="submit"
                                                 <c:if test="${data.status != 'Available'}">disabled</c:if>

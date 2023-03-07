@@ -5,14 +5,20 @@
  */
 package controller;
 
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstMember;
+import model.TxnSalesRecord;
 
 /**
  *
@@ -20,7 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "Sls_Commission_Sales", urlPatterns = {"/Sls_Commission_Sales"})
 public class Sls_Commission_Sales extends HttpServlet {
-
+@EJB
+TxnSalesRecordFacade salesFacade;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,8 +40,23 @@ public class Sls_Commission_Sales extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+         RequestDispatcher rd = request.getRequestDispatcher("sls_commission_sales.jsp");
         try (PrintWriter out = response.getWriter()) {
+            String auth = Session_Authenticator.VerifySalesman(request);
+            
+            if (auth != null && !auth.isEmpty()) {
+                request.getSession().setAttribute("error", "Error: User not authenticated");
+                response.sendRedirect(auth);
+            }
+            
+            MstMember user = (MstMember)request.getSession().getAttribute("user");
+            
+            List<TxnSalesRecord> data = salesFacade.getPendingBookings();
+            request.setAttribute("model", data);
 
+            rd.include(request, response);
+        } catch (Exception ex) {
+            System.out.println("Sls_Manage_Sales: " + ex.getMessage());
         }
     }
 
@@ -50,10 +72,10 @@ public class Sls_Commission_Sales extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("sls_commission_sales.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+//        RequestDispatcher rd = request.getRequestDispatcher("sls_commission_sales.jsp");
+//
+//        rd.include(request, response);
+        processRequest(request, response);
     }
 
     /**

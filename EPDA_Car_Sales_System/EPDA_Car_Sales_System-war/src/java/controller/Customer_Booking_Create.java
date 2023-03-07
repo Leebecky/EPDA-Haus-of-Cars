@@ -5,21 +5,34 @@
  */
 package controller;
 
+import facade.MstCarFacade;
+import facade.TxnSalesRecordFacade;
+import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import java.time.LocalDateTime;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
+import model.MstCustomer;
+import model.TxnSalesRecord;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Customer_Booking_Details", urlPatterns = {"/Customer_Booking_Details"})
-public class Customer_Booking_Details extends HttpServlet {
+@WebServlet(name = "Customer_Create_Booking", urlPatterns = {"/Customer_Booking_Create"})
+public class Customer_Booking_Create extends HttpServlet {
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
+
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,8 +46,48 @@ public class Customer_Booking_Details extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+//         RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
+
         try (PrintWriter out = response.getWriter()) {
 
+            String auth = Session_Authenticator.VerifyCustomer(request);
+            if (auth != null && !auth.isEmpty()) {
+                request.getSession().setAttribute("error", "Please login as a customer to create a booking!");
+                response.sendRedirect("Login");
+                return;
+            }
+
+            String carId = request.getParameter("carId");
+            MstCar car = carFacade.find(carId);
+
+            MstCustomer customer = (MstCustomer) request.getSession().getAttribute("user");
+
+            if (car != null) {
+
+                car.setStatus("Booked");
+
+                TxnSalesRecord booking = new TxnSalesRecord();
+                booking.setCar(car);
+                booking.setOrderStatus("Pending Salesman");
+                booking.setSalesDate(LocalDateTime.now());
+                booking.setCustomer(customer);
+                booking.setCarRating(0);
+                booking.setSalesmanRating(0);
+                booking.setTotalPayable(car.getPrice() + TxnSalesRecord.getBookingFee());
+
+                carFacade.edit(car);
+                salesFacade.create(booking);
+                request.getSession().setAttribute("msg", "Booking created");
+            } else {
+                request.getSession().setAttribute("error", "Car not found");
+            }
+
+            response.sendRedirect("Catalogue_Cars");
+
+        } catch (Exception ex) {
+            System.out.println("Customer_Booking_Create: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occurred: " + ex.getMessage());
+            response.sendRedirect("Catalogue_Cars");
         }
     }
 
@@ -50,10 +103,7 @@ public class Customer_Booking_Details extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher rd = request.getRequestDispatcher("customer_booking_details.jsp");
-
-        rd.include(request, response);
-//        processRequest(request, response);
+        processRequest(request, response);
     }
 
     /**

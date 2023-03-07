@@ -1,124 +1,146 @@
 <%-- Document : manage_users Created on : 03-Feb-2023, 23:49:32 Author : leebe --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@page contentType="text/html" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+        <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+            <%@page contentType="text/html" pageEncoding="UTF-8" %>
+                <!DOCTYPE html>
+                <html>
 
-    <head>
-        <title>Haus of Cars - Admin - Manage Users</title>
-        <jsp:include page="html_head.jspf" />
+                <head>
+                    <jsp:include page="html_head.jspf" />
+                    <title>Haus of Cars - Salesman</title>
 
-        <script>
+                    <script>
 
-            $(document).ready(function () {
-                // Table
-                $("#userTable").fancyTable({
-                    sortColumn: 0,
-                    pagination: true,
-                    perPage: 10,
-                    globalSearch: true,
-                    globalSearchExcludeColumns: [0]
-                });
+                        $(document).ready(function () {
+                            // Table
+                            $("#salesTable").fancyTable({
+                                sortColumn: 0,
+                                pagination: true,
+                                perPage: 10,
+                                globalSearch: true,
+                                globalSearchExcludeColumns: [1, 7]
+                            });
 
-            });
-            
-            // approve user
-            function approveUser(userId) {
-//                let req = confirm("Are you sure you want to delete user: " + email + "?");
-//                if (req) {
-                    $.post("Admin_Approve_User", $.param({"userId": userId}), function (response) {
-                        rep = JSON.parse(response);
-                        if (rep.msg == "Success") {
-                            alert("User successfully approved");
-                            location.reload();
-                        } else {
-                            alert(rep.msg);
+                        });
+
+
+                        // cancel booking
+                        function cancelBooking(salesId) {
+                            let req = confirm("Are you sure you want to cancel the booking?");
+                            if (req) {
+                                $("#frmCancelBooking-" + salesId).submit();
+                            }
                         }
-                    })
-//                }
-            }
 
-            // delete user
-            function deleteUserData(userId, email) {
-                let req = confirm("Are you sure you want to delete user: " + email + "?");
-                if (req) {
-                    $.post("Admin_Delete_User", $.param({"userId": userId}), function (response) {
-                        rep = JSON.parse(response);
-                        if (rep.msg == "Success") {
-                            alert("User successfully deleted");
-                            location.reload();
-                        } else {
-                            alert(rep.msg);
+                        // pay booking
+                        function payBooking(salesId) {
+                            let req = confirm("Has the customer paid for this transaction?");
+                            if (req) {
+                                $("#frmPayBooking-" + salesId).submit();
+                            }
                         }
-                    })
-                }
-            }
-        </script>
+                    </script>
 
-    </head>
+                </head>
 
-    <body>
-        <jsp:include page="_layout/header.jsp" />
+                <body>
+                    <jsp:include page="_layout/header.jsp" />
 
-        <!-- User Data Table -->
-        <div class="mx-4">
-            
-            <div class="mx-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h1 class="">Salesman Sales Management</h1>
+                    <!-- User Data Table -->
+                    <div class="mx-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h1 class="">Manage Sales</h1>
+                            <div>
+                                <a href="Sls_Commission_Sales" role="button"
+                                    class="btn btn-outline-primary my-2 bi bi-calendar-check"
+                                    style="font-size: 1.5rem;">
+                                    Accept Sales Booking</a>
 
-                    <a href="User_Profile?mode=New" role="button"
-                        class="btn btn-outline-primary my-2 bi bi-pencil-square" style="font-size: 1.5rem;">New</a>
-                </div>
+                                <a href="Booking_Details?id=-1&mode=New" role="button"
+                                    class="btn btn-outline-primary my-2 bi bi-plus-circle" style="font-size: 1.5rem;">
+                                    Add New Booking</a>
+                            </div>
+                        </div>
 
-            <table id="userTable" class="table table-striped align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">User Role</th>
-                        <th scope="col">Status</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
+                        <table id="salesTable" class="table table-striped align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Car</th>
+                                    <th scope="col">Customer</th>
+                                    <th scope="col">Total Payable (RM)</th>
+                                    <th scope="col">Sales Date</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                    <c:forEach items="${requestScope.model}" var="data" varStatus="loop">
-                        <tr>
-                            <td scope="row">
-                                <b><c:out value="${loop.index+1}" /></b>
-                            </td>
-                            <td>${data.fullname}</td>
-                            <td>${data.email}</td>
-                            <td>${data.userType}</td>
-                            <td>${data.status}</td>
-                            <td style="text-align: end;">
+                                <c:forEach items="${requestScope.model}" var="data" varStatus="loop">
+                                    <tr>
+                                        <td scope="row">
+                                            <b>
+                                                <c:out value="${loop.index+1}" />
+                                            </b>
+                                        </td>
+                                        <td>${data.car.brand}</td>
+                                        <td>${data.customer.fullname}</td>
+                                        <td>
+                                            <fmt:formatNumber type="number" maxFractionDigits="2"
+                                                value="${data.totalPayable}" />
+                                        </td>
+                                        <td>${data.salesDate.toLocalDate()}</td>
+                                        <td>${data.orderStatus}</td>
+                                        <td style="text-align: end;">
 
-                                <c:if test="${data.status != 'Approved'}">
-                                    <!-- Approve -->
-                                    <button type="button" class="btn btn-outline-success bi bi-check-lg"
-                                            style="font-size: 1.5rem;"
-                                            onclick="approveUser('${data.userId}')"> Approve</button>
+                                            <!-- Review -->
+                                            <a href="Booking_Details?mode=Review&id=${data.salesId}" role="button"
+                                                class="btn btn-outline-warning bi bi-card-text me-2"
+                                                style="font-size: 1.5rem;"> Review</a>
+
+                                            <!-- Pay -->
+                                            <c:if
+                                                test="${!data.orderStatus.equals('Paid') && !data.orderStatus.equals('Cancelled')}">
+                                                <form id="frmPayBooking-${data.salesId}" action="Sls_Booking_Paid"
+                                                    method="post" class="btn">
+                                                    <input type="hidden" name="salesId" value="${data.salesId}">
+                                                    <button type="button" class="btn btn-outline-success bi bi-coin"
+                                                        style="font-size: 1.5rem;"
+                                                        onclick="payBooking('${data.salesId}')">
+                                                        Pay Booking</button>
+                                                </form>
+                                            </c:if>
+
+                                            <!-- Cancel -->
+                                            <c:if test="${data.orderStatus.equals('Booked')}">
+                                                <form id="frmCancelBooking-${data.salesId}"
+                                                    action="Customer_Booking_Cancel" method="post" class="btn">
+                                                    <input type="hidden" name="salesId" value="${data.salesId}">
+                                                    <button type="button" class="btn btn-outline-danger bi bi-x-circle"
+                                                        style="font-size: 1.5rem;"
+                                                        onclick="cancelBooking('${data.salesId}')">
+                                                        Cancel</button>
+                                                </form>
+                                            </c:if>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                                <!-- If no data -->
+                                <c:if test="${model.size() == 0}">
+                                    <tr>
+                                        <td class="text-center">No data found</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
                                 </c:if>
+                            </tbody>
+                        </table>
+                    </div>
+                </body>
 
-                                <!-- Edit -->
-                                <a href="User_Profile?id='${data.userId}'" role="button" 
-                                   class="btn btn-outline-warning bi bi-pencil-square me-2"
-                                   style="font-size: 1.5rem;">Edit</a>
-
-                                <!-- Delete -->
-                                <button type="button" class="btn btn-outline-danger bi bi-trash3-fill"
-                                        style="font-size: 1.5rem;"
-                                        onclick="deleteUserData('${data.userId}', '${data.email}')"> Delete</button>
-                            </td>
-                        </tr>
-                    </c:forEach>
-
-                </tbody>
-            </table>
-        </div>
-    </body>
-
-</html>
+                </html>

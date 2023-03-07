@@ -5,21 +5,28 @@
  */
 package controller;
 
+import com.google.gson.Gson;
+import facade.MstMemberFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import model.MstMember;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Logout", urlPatterns = {"/Logout"})
-public class Logout extends HttpServlet {
+@WebServlet(name = "Booking_Customer_List", urlPatterns = {"/Booking_Customer_List"})
+public class Booking_Customer_List extends HttpServlet {
+
+    @EJB
+    MstMemberFacade memberFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,12 +41,15 @@ public class Logout extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            HttpSession session = request.getSession();
-            session.invalidate();
-            
-            response.sendRedirect("Catalogue_Cars");
+            List<MstMember> data = memberFacade.getAvailableCustomers();
+
+            String dataJson = new Gson().toJson(data);
+            out.write(dataJson);
+
+        }catch(Exception ex) {
+            System.out.println("Booking_Customer_List: " + ex.getMessage());
         }
-    }
+            }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

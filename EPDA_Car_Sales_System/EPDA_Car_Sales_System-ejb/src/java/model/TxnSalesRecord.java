@@ -41,7 +41,8 @@ public class TxnSalesRecord implements Serializable {
     private String orderStatus;
     private String salesmanComments;
     private String customerReview;
-    private float rating;
+    private float salesmanRating;
+    private float carRating;
     private LocalDateTime salesDate;
 
     // Getters & Setters
@@ -112,14 +113,23 @@ public class TxnSalesRecord implements Serializable {
         this.customerReview = customerReview;
     }
 
-    public float getRating() {
-        return rating;
+    public float getSalesmanRating() {
+        return salesmanRating;
     }
 
-    public void setRating(float rating) {
-        this.rating = rating;
+    public void setSalesmanRating(float salesmanRating) {
+        this.salesmanRating = salesmanRating;
     }
 
+    public float getCarRating() {
+        return carRating;
+    }
+
+    public void setCarRating(float carRating) {
+        this.carRating = carRating;
+    }
+
+       
     public LocalDateTime getSalesDate() {
         return salesDate;
     }

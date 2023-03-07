@@ -200,6 +200,15 @@ public class Admin_Car_Details extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        String auth = Session_Authenticator.VerifyAdmin(request);
+        
+        if (!auth.isEmpty()) {
+            request.getSession().setAttribute("error", "Error: User not authenticated!");
+            response.sendRedirect("Login");
+            return;
+        }
+        
         String requestType = request.getParameter("carUpdateType");
         if (requestType.equals("imageUpdate")) {
             processImageUpdate(request, response);

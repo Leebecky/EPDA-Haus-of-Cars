@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaQuery;
+import model.MstCar;
 import model.MstMember;
 
 /**
@@ -79,6 +80,19 @@ public class MstMemberFacade extends AbstractFacade<MstMember> {
             return data;
         } catch (Exception e) {
             System.out.println("MstMemberFacade - getAllUsers : " + e.getMessage());
+            return null;
+        }
+    }
+    
+      public List<MstMember> getAvailableCustomers() {
+        try {
+
+            TypedQuery query = em.createQuery("select m from MstMember m where m.userType = 'Customer' and m.status = 'Approved'", MstMember.class);
+            List<MstMember> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("MstCarFacade - getAvailableCars : " + e.getMessage());
             return null;
         }
     }

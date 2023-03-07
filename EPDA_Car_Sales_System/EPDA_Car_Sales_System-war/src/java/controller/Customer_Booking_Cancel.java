@@ -28,7 +28,7 @@ public class Customer_Booking_Cancel extends HttpServlet {
 
     @EJB
     TxnSalesRecordFacade salesFacade;
-    
+
     @EJB
     MstCarFacade carFacade;
 
@@ -48,35 +48,39 @@ public class Customer_Booking_Cancel extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
 
             // Authenticating User Privileges
-            String auth = Session_Authenticator.VerifyCustomer(request);
-            if (!auth.isEmpty()) {
+            String auth = Session_Authenticator.VerifyLogin(request);
+            if (auth.isEmpty()) {
                 request.getSession().setAttribute("error", "Error: User not authenticated");
                 response.sendRedirect(auth);
                 return;
             }
 
             String salesId = request.getParameter("salesId");
-            System.out.println("SALES: "+salesId);
-            
+//            System.out.println("SALES: "+salesId);
+
             TxnSalesRecord sales = salesFacade.find(salesId);
             sales.setOrderStatus("Cancelled");
-            
-            System.out.println("Sales: " + sales);
-            System.out.println("Sales: " + sales.getCar());
-            
+
+//            System.out.println("Sales: " + sales);
+//            System.out.println("Sales: " + sales.getCar());
             MstCar car = sales.getCar();
             car.setStatus("Available");
-            
+
             salesFacade.edit(sales);
             carFacade.edit(car);
-            
+
             request.getSession().setAttribute("msg", "Booking successfully cancelled");
-            response.sendRedirect("Customer_Booking");
-            
+
+            if (auth.equals("Customer")) {
+                response.sendRedirect("Customer_Booking");
+            } else {
+                response.sendRedirect("Sls_Manage_Sales");
+            }
+
         } catch (Exception ex) {
             System.out.println("Customer_Booking_Cancel: " + ex.getMessage());
             request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
-            response.sendRedirect("Customer_Booking");
+            response.sendRedirect("Catalogue_Cars");
         }
     }
 

@@ -5,9 +5,11 @@
  */
 package facade;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import model.MstCar;
 
 /**
@@ -28,5 +30,17 @@ public class MstCarFacade extends AbstractFacade<MstCar> {
     public MstCarFacade() {
         super(MstCar.class);
     }
-    
+ 
+    public List<MstCar> getAvailableCars() {
+        try {
+
+            TypedQuery query = em.createQuery("select m from MstCar m where m.status = 'Available'", MstCar.class);
+            List<MstCar> data = query.getResultList();
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("MstCarFacade - getAvailableCars : " + e.getMessage());
+            return null;
+        }
+    }
 }

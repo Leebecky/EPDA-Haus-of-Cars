@@ -56,7 +56,11 @@
                         </li>                        
 
                         <li class="nav-item">
-                            <a class="nav-link text-light fs-5" href="Sales" aria-current="page">Sales</a>
+                            <a class="nav-link text-light fs-5" href="Sls_Manage_Sales" aria-current="page">Sales</a>
+                        </li>                        
+                     
+                        <li class="nav-item">
+                            <a class="nav-link text-light fs-5" href="Admin_Manage_Cars" aria-current="page">Cars</a>
                         </li>                        
                     </ul>
                 </c:if>
