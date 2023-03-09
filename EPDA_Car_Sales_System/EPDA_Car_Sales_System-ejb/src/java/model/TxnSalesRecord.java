@@ -6,8 +6,8 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +29,8 @@ public class TxnSalesRecord implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String salesId;
+    
+    @ManyToOne
     private MstCar car;
 
     @ManyToOne
@@ -43,7 +45,7 @@ public class TxnSalesRecord implements Serializable {
     private String customerReview;
     private float salesmanRating;
     private float carRating;
-    private LocalDateTime salesDate;
+    private LocalDate salesDate;
 
     // Getters & Setters
     public String getSalesId() {
@@ -130,11 +132,11 @@ public class TxnSalesRecord implements Serializable {
     }
 
        
-    public LocalDateTime getSalesDate() {
+    public LocalDate getSalesDate() {
         return salesDate;
     }
 
-    public void setSalesDate(LocalDateTime salesDate) {
+    public void setSalesDate(LocalDate salesDate) {
         this.salesDate = salesDate;
     }
 

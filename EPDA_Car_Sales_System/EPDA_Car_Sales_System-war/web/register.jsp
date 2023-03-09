@@ -92,6 +92,12 @@
                                             required>
                                     </div>
 
+                                     <!-- IC Number -->
+                                     <div class="form-group mb-3">
+                                        <input type="text" class="form-control" placeholder="Ic Number" name="icNo"
+                                            required>
+                                    </div>
+
                                     <!-- Password -->
                                     <div class="input-group mb-3">
                                         <input id="passwordField" type="password" name="password" class="form-control"

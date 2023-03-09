@@ -9,7 +9,9 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
 import model.MstCar;
 
 /**
@@ -40,6 +42,24 @@ public class MstCarFacade extends AbstractFacade<MstCar> {
             return data;
         } catch (Exception e) {
             System.out.println("MstCarFacade - getAvailableCars : " + e.getMessage());
+            return null;
+        }
+    }
+    
+    public List<Object[]> rptCarCard(HttpServletRequest request) {
+        try {   
+            Query query = em.createNativeQuery("Select 'availableCars', Count(mst.carId) from MstCar mst Where mst.status = 'Available'"
+                    + " Union "
+                    + "Select 'bookedCars', Count(mst.carId) from MstCar mst Where mst.status = 'Booked'");
+
+            Query query2 = em.createNativeQuery("Select 'bestSellingModel', m.MODEL from TxnSalesRecord txn Inner Join mstCar m on m.carId = txn.car_carId Where txn.orderStatus = 'Paid' Group By txn.salesman_userId, m.MODEL Order By Count(txn.salesId) desc, m.model").setMaxResults(1);
+
+            List<Object[]> data = query.getResultList();
+            data.addAll(query2.getResultList());
+
+            return data;
+        } catch (Exception e) {
+            System.out.println("TxnSalesRecordFacade - rptCarCard : " + e.getMessage());
             return null;
         }
     }

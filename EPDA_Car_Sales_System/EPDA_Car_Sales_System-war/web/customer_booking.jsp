@@ -42,7 +42,7 @@
                     <!-- User Data Table -->
                     <div class="mx-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h1 class="">Transaction History</h1>
+                            <h1 class="">Booking History</h1>
                         </div>
 
                         <table id="salesTable" class="table table-striped align-middle">
@@ -72,7 +72,7 @@
                                             <fmt:formatNumber type="number" maxFractionDigits="2"
                                                 value="${data.totalPayable}" />
                                         </td>
-                                        <td>${data.salesDate.toLocalDate()}</td>
+                                        <td>${data.salesDate}</td>
                                         <td>${data.orderStatus}</td>
                                         <td style="text-align: end;">
 

@@ -6,12 +6,11 @@
 package controller;
 
 import facade.MstMemberFacade;
+import facade.TxnSalesRecordFacade;
 import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
-import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,6 +27,9 @@ public class Admin_Delete_User extends HttpServlet {
 
     @EJB
     MstMemberFacade memberFacade;
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,15 +54,31 @@ public class Admin_Delete_User extends HttpServlet {
             }
 
             String userId = request.getParameter("userId");
-            System.out.println("USER: "+ userId);
+//            System.out.println("USER: "+ userId);
             MstMember member = memberFacade.find(userId);
-            memberFacade.remove(member);
+
+            if (member != null) {
+                boolean hasRecords = salesFacade.hasTransactions(member.getUserId());
+
+                if (hasRecords) {
+                    member.setStatus("Inactive");
+                    memberFacade.edit(member);
+                    request.getSession().setAttribute("msg", "User has been deactivated. Unable to delete due to existing booking records.");
+
+                } else {
+                    memberFacade.remove(member);
+                    request.getSession().setAttribute("msg", "User successfully deleted");
+                }
+
+            } else {
+                request.getSession().setAttribute("error", "User not found!");
+
+            }
+
 //            JsonObject json = Json.createObjectBuilder().add("msg", "Success").build();
 //            response.getWriter().write(json.toString());
-            
-            request.getSession().setAttribute("msg", "User successfully deleted");
             response.sendRedirect("Admin_Manage_Users");
-            
+
         } catch (Exception ex) {
             System.out.println("Admin_Delete_User: " + ex.getMessage());
             request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());

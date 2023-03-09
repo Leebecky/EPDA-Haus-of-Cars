@@ -97,8 +97,14 @@
 
                     // Verify Data
                     function verifyData() {
+
                         if ($("#userRole").val() == "Select User Role") {
                             customAlert("Please select a user role!", "error");
+                            return false;
+                        }
+
+                        if ($("#fullname").val().search((/[^a-z\s]+/gi)) != -1) {
+                            customAlert("Full name must only contain alphabets!", "error");
                             return false;
                         }
 
@@ -106,6 +112,16 @@
                         var currentYear = new Date().getFullYear();
                         if (currentYear - dob < 21) {
                             customAlert("User cannot be younger than 21!", "error");
+                            return false;
+                        }
+
+                        if ($("#icNo").val().search((/^[\d -]+$/)) == -1) {
+                            customAlert("IC Number cannot contain alphabets!", "error");
+                            return false;
+                        }
+
+                        if ($("#telNo").val().search((/^[\d -]+$/)) == -1) {
+                            customAlert("Phone Number cannot contain alphabets!", "error");
                             return false;
                         }
 
@@ -146,7 +162,7 @@
                                 <div class="profile-container">
                                     <img class="profile-image rounded-circle mt-5" alt="User Profile Image" src="
                                  <c:choose>
-                                     <c:when test=" ${model.profileImage !=null && !model.profileImage.isEmpty()}">
+                                     <c:when test='${model.profileImage != null && !model.profileImage.isEmpty()}'>
                                     ${model.profileImage}
                                     </c:when>
                                     <c:otherwise>
@@ -232,7 +248,7 @@
 
                                         <div class="col-md-12">
                                             <label class="labels">Full Name</label>
-                                            <input type="text" class="form-control" placeholder="Full name"
+                                            <input type="text" class="form-control" placeholder="Full name" id="fullname"
                                                 name="fullname" value="${model.fullname}" required>
                                         </div>
 
@@ -244,7 +260,7 @@
 
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">IC Number</label>
-                                            <input type="text" class="form-control" placeholder="IC Number" name="icNo"
+                                            <input type="text" class="form-control" placeholder="IC Number" id="icNo" name="icNo"
                                                 value="${model.icNo}" required>
                                         </div>
 
@@ -264,7 +280,7 @@
 
                                         <div class="col-md-12 mt-3">
                                             <label class="labels">Mobile Number</label>
-                                            <input type="text" class="form-control" name="telNo"
+                                            <input type="text" class="form-control" name="telNo" id="telNo"
                                                 placeholder="Phone number" value="${model.telNo}" required>
                                         </div>
                                         <div class="col-md-12 mt-3">

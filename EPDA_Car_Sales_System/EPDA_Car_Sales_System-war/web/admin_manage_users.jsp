@@ -117,7 +117,7 @@
                                                 style="font-size: 1.5rem;"> Edit</a>
 
                                             <!-- Delete -->
-                                            <c:if test="${data.userId != user.userId}">
+                                            <c:if test="${data.userId != user.userId && data.status != 'Inactive'}">
                                                 <form id="frmDeleteUser-${data.userId}" action="Admin_Delete_User"
                                                     method="post" class="btn">
                                                     <input type="hidden" name="userId" value="${data.userId}">
@@ -127,6 +127,19 @@
                                                         onclick="deleteUserData('${data.email}', '${data.userId}')"
                                                         form="frmDeleteUser">
                                                         Delete</button>
+                                                </form>
+                                            </c:if>
+
+                                            <!-- Activate -->
+                                            <c:if test="${data.status == 'Inactive'}">
+                                                <form id="frmActivateUser-${data.userId}" action="Admin_Activate_User"
+                                                    method="post" class="btn">
+                                                    <input type="hidden" name="userId" value="${data.userId}">
+                                                    <button type="submit"
+                                                        class="btn btn-outline-primary bi bi-lightning-charge"
+                                                        style="font-size: 1.5rem;"
+                                                        form="frmActivateUser-${data.userId}">
+                                                        Activate</button>
                                                 </form>
                                             </c:if>
                                         </td>

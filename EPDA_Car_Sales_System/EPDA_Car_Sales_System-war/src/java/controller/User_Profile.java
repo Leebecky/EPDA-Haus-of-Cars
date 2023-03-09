@@ -90,7 +90,7 @@ public class User_Profile extends HttpServlet {
             // Updating Profile
             if (mode.equals("New")) {
                 if (userRole.equals("Customer")) {
-                    MstCustomer cust = MstCustomer.createNewCustomer(username, email, "Cus-" + icNo);
+                    MstCustomer cust = MstCustomer.createNewCustomer(username, email, username + "-" + icNo);
                     cust.setUsername(username);
                     cust.setFullname(fullname);
                     cust.setGender(gender);
@@ -111,7 +111,7 @@ public class User_Profile extends HttpServlet {
 
                     cusFacade.create(cust);
                 } else { // Salesman & Admin
-                    MstMember member = MstMember.createNewSalesman(username, email, userRole + "-" + icNo, "Approved");
+                    MstMember member = MstMember.createNewSalesman(username, email, username + "-" + icNo, "Approved");
                     member.setUsername(username);
                     member.setFullname(fullname);
                     member.setGender(gender);

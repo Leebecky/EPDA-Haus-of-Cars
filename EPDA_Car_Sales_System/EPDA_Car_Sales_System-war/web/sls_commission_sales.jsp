@@ -74,7 +74,7 @@
                                             <fmt:formatNumber type="number" maxFractionDigits="2"
                                                 value="${data.totalPayable}" />
                                         </td>
-                                        <td>${data.salesDate.toLocalDate()}</td>
+                                        <td>${data.salesDate}</td>
                                         <td>${data.orderStatus}</td>
                                         <td style="text-align: end;">
 

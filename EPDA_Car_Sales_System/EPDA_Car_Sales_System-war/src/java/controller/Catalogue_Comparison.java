@@ -5,16 +5,19 @@
  */
 package controller;
 
+import facade.MstCarFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstCar;
 
 /**
  *
@@ -22,6 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "Catalogue_Comparison", urlPatterns = {"/Catalogue_Comparison"})
 public class Catalogue_Comparison extends HttpServlet {
+
+    @EJB
+    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -68,6 +74,17 @@ public class Catalogue_Comparison extends HttpServlet {
             throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("catalogue_comparison.jsp");
 
+        ArrayList<String> comparisonList = (ArrayList<String>) request.getSession().getAttribute("comparison");
+        if (comparisonList == null) {
+            comparisonList = new ArrayList<>();
+        }
+
+        List<MstCar> carComparisonList = new ArrayList<>();
+        for (String car : comparisonList) {
+            carComparisonList.add(carFacade.find(car));
+        }
+
+        request.setAttribute("model", carComparisonList);
         rd.include(request, response);
 //        processRequest(request, response);
     }

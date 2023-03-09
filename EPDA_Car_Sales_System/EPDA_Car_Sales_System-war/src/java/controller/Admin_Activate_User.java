@@ -5,34 +5,31 @@
  */
 package controller;
 
-import facade.MstCarFacade;
+import facade.MstMemberFacade;
 import facade.TxnSalesRecordFacade;
 import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDate;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.MstCar;
-import model.MstCustomer;
-import model.TxnSalesRecord;
+import model.MstMember;
 
 /**
  *
  * @author leebe
  */
-@WebServlet(name = "Customer_Create_Booking", urlPatterns = {"/Customer_Booking_Create"})
-public class Customer_Booking_Create extends HttpServlet {
+@WebServlet(name = "Admin_Activate_User", urlPatterns = {"/Admin_Activate_User"})
+public class Admin_Activate_User extends HttpServlet {
+
+    @EJB
+    MstMemberFacade memberFacade;
 
     @EJB
     TxnSalesRecordFacade salesFacade;
-
-    @EJB
-    MstCarFacade carFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,49 +42,35 @@ public class Customer_Booking_Create extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-//         RequestDispatcher rd = request.getRequestDispatcher("catalogue_cars.jsp");
 
+        response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
 
-            String auth = Session_Authenticator.VerifyCustomer(request);
-            if (auth != null && !auth.isEmpty()) {
-                request.getSession().setAttribute("error", "Please login as a customer to create a booking!");
-                response.sendRedirect("Login");
+            // Authenticating User Privileges
+            String auth = Session_Authenticator.VerifyAdmin(request);
+            if (!auth.isEmpty()) {
+                response.sendRedirect(auth);
                 return;
             }
 
-            String carId = request.getParameter("carId");
-            MstCar car = carFacade.find(carId);
+            String userId = request.getParameter("userId");
+            MstMember member = memberFacade.find(userId);
 
-            MstCustomer customer = (MstCustomer) request.getSession().getAttribute("user");
-
-            if (car != null) {
-
-                car.setStatus("Booked");
-
-                TxnSalesRecord booking = new TxnSalesRecord();
-                booking.setCar(car);
-                booking.setOrderStatus("Pending Salesman");
-                booking.setSalesDate(LocalDate.now());
-                booking.setCustomer(customer);
-                booking.setCarRating(0);
-                booking.setSalesmanRating(0);
-                booking.setTotalPayable(car.getPrice() + TxnSalesRecord.getBookingFee());
-
-                carFacade.edit(car);
-                salesFacade.create(booking);
-                request.getSession().setAttribute("msg", "Booking created");
+            if (member != null) {
+                member.setStatus("Approved");
+                memberFacade.edit(member);
+                request.getSession().setAttribute("msg", "User has been activated.");
             } else {
-                request.getSession().setAttribute("error", "Car not found");
+                request.getSession().setAttribute("error", "User not found!");
+
             }
 
-            response.sendRedirect("Catalogue_Cars");
+            response.sendRedirect("Admin_Manage_Users");
 
         } catch (Exception ex) {
-            System.out.println("Customer_Booking_Create: " + ex.getMessage());
-            request.getSession().setAttribute("error", "Unexpected error occurred: " + ex.getMessage());
-            response.sendRedirect("Catalogue_Cars");
+            System.out.println("Admin_Delete_User: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
+            response.sendRedirect("Admin_Manage_Users");
         }
     }
 

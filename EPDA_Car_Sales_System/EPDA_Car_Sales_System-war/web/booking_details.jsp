@@ -67,7 +67,7 @@
                             $("#carColour").val(selectedData.colour);
                             $("#transmissionType").val(selectedData.transmissionType);
                             $("#carCapacity").val(selectedData.capacity);
-                            $("#carImage").attr("src",selectedData.carImage);
+                            $("#carImage").attr("src", selectedData.carImage);
                             $("#carPrice").val("RM " + selectedData.price.toFixed(2));
                             $("#totalPayable").val("RM " + total.toFixed(2))
                         }
@@ -112,7 +112,7 @@
                                  </c:choose>">
                                     </div>
                                     <span class="font-weight-bold">${model.orderStatus} -
-                                        ${model.salesDate.toLocalDate()}</span>
+                                        ${model.salesDate}</span>
 
                                 </div>
                             </div>
@@ -260,8 +260,7 @@
                                                 <!-- Back -->
                                                 <a href="
                                                    <c:choose>
-                                                       <c:when test='${sessionScope.user.userType == "
-                                                    Customer"}'>Customer_Booking</c:when>
+                                                       <c:when test='${sessionScope.user.userType == "Customer"}'>Customer_Booking</c:when>
                                                     <c:when test='${mode=="View"}'>Sls_Commission_Sales</c:when>
                                                     <c:otherwise>Sls_Manage_Sales</c:otherwise>
                                                     </c:choose>

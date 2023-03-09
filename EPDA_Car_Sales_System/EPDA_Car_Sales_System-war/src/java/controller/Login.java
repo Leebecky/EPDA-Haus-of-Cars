@@ -57,6 +57,19 @@ public class Login extends HttpServlet {
 //                rd.forward(request, response);
                 return;
             } else {
+                if (member.getStatus().equals("Pending")) {
+                    request.getSession().setAttribute("error", "User has not been approved yet. Please wait to be approved");
+                    response.sendRedirect("Login");
+                    return;
+                }
+                
+                if (member.getStatus().equals("Inactive")) {
+                    request.getSession().setAttribute("error", "Account has been deactivated. Please contact the Admin to reactivate your account.");
+                    response.sendRedirect("Login");
+                    return;
+                }
+                
+
                 // On Success, Redirect to Customer Home
                 HttpSession ses = request.getSession();
 

@@ -35,6 +35,12 @@
                         if (transmissionType != "" && transmissionType != null) {
                             $("#carTransmissionType").val(transmissionType);
                         }
+
+                        $('#frmCarDetails').submit((e) => {
+                            if (!verifyData()) {
+                                e.preventDefault();
+                            }
+                        });
                     });
 
                     // Update Profile Image
@@ -43,6 +49,20 @@
                         $("#carImage").change(() => {
                             $("#frmCarImage").submit();
                         });
+                    }
+
+                    function verifyData(){
+                        if ($("#carBrand").val().search((/[^a-z\s]+/gi)) != -1) {
+                            customAlert("Car brand must only contain alphabets!", "error");
+                            return false;
+                        }
+
+                        if ($("#carColour").val().search((/[^a-z\s]+/gi)) != -1) {
+                            customAlert("Car colour must only contain alphabets!", "error");
+                            return false;
+                        }
+
+                        return true;
                     }
                 </script>
             </head>

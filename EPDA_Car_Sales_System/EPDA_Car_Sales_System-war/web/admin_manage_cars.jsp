@@ -99,7 +99,7 @@
                                             </c:if>
 
                                             <!-- Delete -->
-                                            <c:if test="${sessionScope.user.userType == 'Admin'}">
+                                            <c:if test="${sessionScope.user.userType == 'Admin' && data.status != 'Inactive'}">
                                                 <form id="frmDeleteCar-${data.carId}" action="Admin_Car_Delete"
                                                     method="post" class="btn">
                                                     <input type="hidden" name="carId" value="${data.carId}">
@@ -108,6 +108,18 @@
                                                         style="font-size: 1.5rem;"
                                                         onclick="deleteCarData('${data.carId}')">
                                                         Delete</button>
+                                                </form>
+                                            </c:if>
+
+                                             <!-- Activate -->
+                                             <c:if test="${data.status == 'Inactive'}">
+                                                <form id="frmActivateCar-${data.carId}" action="Admin_Car_Activate"
+                                                    method="post" class="btn">
+                                                    <input type="hidden" name="carId" value="${data.carId}">
+                                                    <button type="submit"
+                                                        class="btn btn-outline-primary bi bi-lightning-charge"
+                                                        style="font-size: 1.5rem;">
+                                                        Activate</button>
                                                 </form>
                                             </c:if>
                                         </td>

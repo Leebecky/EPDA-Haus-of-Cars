@@ -6,6 +6,7 @@
 package controller;
 
 import facade.MstCarFacade;
+import facade.TxnSalesRecordFacade;
 import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,6 +27,9 @@ public class Admin_Car_Delete extends HttpServlet {
 
     @EJB
     MstCarFacade carFacade;
+
+    @EJB
+    TxnSalesRecordFacade salesFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -52,11 +56,31 @@ public class Admin_Car_Delete extends HttpServlet {
             String carId = request.getParameter("carId");
 //            System.out.println("CAR: "+carId);
             MstCar car = carFacade.find(carId);
-            carFacade.remove(car);
-            
-            request.getSession().setAttribute("msg", "Car successfully deleted");
+
+            if (car != null) {
+
+                Boolean hasTransaction = salesFacade.hasCarTransactions(car.getCarId());
+
+                if (hasTransaction) {
+
+                    if (car.getStatus().equals("Available")) {
+                        car.setStatus("Inactive");
+                        carFacade.edit(car);
+                        request.getSession().setAttribute("error", "Car has been deactivated. Unable to delete car due to existing booking records.");
+                    } else {
+                        request.getSession().setAttribute("error", "Unable to delete car due to existing booking records.");
+                    }
+                } else {
+                    carFacade.remove(car);
+                    request.getSession().setAttribute("msg", "Car successfully deleted");
+                }
+
+            } else {
+                request.getSession().setAttribute("error", "Car not found!");
+            }
+
             response.sendRedirect("Admin_Manage_Cars");
-            
+
         } catch (Exception ex) {
             System.out.println("Admin_Delete_Car: " + ex.getMessage());
             request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());

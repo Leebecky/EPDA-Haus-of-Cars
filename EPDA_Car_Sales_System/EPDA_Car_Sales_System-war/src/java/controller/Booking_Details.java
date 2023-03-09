@@ -11,7 +11,7 @@ import facade.TxnSalesRecordFacade;
 import helper.Session_Authenticator;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.ejb.EJB;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -147,7 +147,7 @@ public class Booking_Details extends HttpServlet {
                 booking.setSalesman(salesman);
                 booking.setCustomer(customer);
                 booking.setCar(car);
-                booking.setSalesDate(LocalDateTime.now());
+                booking.setSalesDate(LocalDate.now());
                 booking.setOrderStatus("Booked");
                 booking.setSalesmanComments(salesmanComments);
                 salesFacade.create(booking);
@@ -195,7 +195,7 @@ public class Booking_Details extends HttpServlet {
                 data = salesFacade.find(salesId);
             } else {
                 data.setOrderStatus("Pending");
-                data.setSalesDate(LocalDateTime.now());
+                data.setSalesDate(LocalDate.now());
             }
 
             request.setAttribute("model", data);

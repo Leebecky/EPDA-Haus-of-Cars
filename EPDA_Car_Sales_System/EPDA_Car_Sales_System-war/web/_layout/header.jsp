@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <nav class="navbar navbar-expand-sm" style="background-color: #263159;">
-    <a class="navbar-brand" href="Home">
+    <a class="navbar-brand" href="Catalogue_Cars">
         <img src="images/car-logo-rectangle-white.png" alt="Haus of Cars" width="100">
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
@@ -51,9 +51,9 @@
                 <c:if test="${sessionScope.user.userType == 'Salesman'}">
 
                     <ul class="navbar-nav me-auto mt-2 mt-lg-0">
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link text-light fs-5" href="Home" aria-current="page">Dashboard</a>
-                        </li>                        
+                        </li>                         -->
 
                         <li class="nav-item">
                             <a class="nav-link text-light fs-5" href="Sls_Manage_Sales" aria-current="page">Sales</a>
@@ -73,7 +73,7 @@
                             <a class="nav-link text-light fs-5" href="Catalogue_Cars" aria-current="page">Catalogue</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light fs-5" href="Customer_Booking" aria-current="page">Transaction History</a>
+                            <a class="nav-link text-light fs-5" href="Customer_Booking" aria-current="page">Booking History</a>
                         </li>
 
                     </ul>

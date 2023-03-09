@@ -26,7 +26,7 @@ import model.MstMember;
  */
 @WebServlet(name = "Register", urlPatterns = {"/Register"})
 public class Register extends HttpServlet {
-
+    
     @EJB
     MstMemberFacade memberFacade = new MstMemberFacade();
     @EJB
@@ -51,42 +51,47 @@ public class Register extends HttpServlet {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
             String password = request.getParameter("password");
+            String icNo = request.getParameter("icNo");
             String userRole = request.getParameter("userRole");
-
+            
             MstMember member = memberFacade.getUser(email);
             if (member == null) {
                 if (userRole.equals("Customer")) {
-
+                    
                     MstCustomer cus = MstCustomer.createNewCustomer(username, email, password);
+                    cus.setIcNo(icNo);
                     customerFacade.create(cus);
 
                     // On Success, Redirect to Customer Home
                     MstMember loggedInUser = memberFacade.getUser(email);
-
+                    
                     HttpSession ses = request.getSession();
-                    ses.setAttribute("user", loggedInUser);
-
-                    response.sendRedirect("Home");
+                    ses.setAttribute("msg", "User has been registered. Please wait for account to be approved");
+//                    ses.setAttribute("user", loggedInUser);
+                    
+                    response.sendRedirect("Login");
                 } else {
-                    MstMember salesman = MstMember.createNewSalesman(username, email, password, "Inactive");
+                    MstMember salesman = MstMember.createNewSalesman(username, email, password, "Pending");
+                    salesman.setIcNo(icNo);
                     memberFacade.create(salesman);
 
                     // On Success, Redirect to Salesman Home
                     MstMember loggedInUser = memberFacade.getUser(email);
-
+                    
                     HttpSession ses = request.getSession();
-                    ses.setAttribute("user", loggedInUser);
-
-                    response.sendRedirect("Home");
+                    ses.setAttribute("msg", "User has been registered. Please wait for account to be approved");
+//                    ses.setAttribute("user", loggedInUser);
+                    
+                    response.sendRedirect("Login");
                 }
-
+                
             } else {
                 request.getSession().setAttribute("error", "This email already has an account!");
                 response.sendRedirect("Register");
 //                rd.forward(request, response);
                 return;
             }
-
+            
         } catch (Exception ex) {
             request.getSession().setAttribute("error", "Unexpected error occured: " + ex.getMessage());
             response.sendRedirect("Register");

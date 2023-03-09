@@ -5,14 +5,16 @@
  */
 package controller;
 
+import facade.MstMemberFacade;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.MstMember;
 
 /**
  *
@@ -20,6 +22,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "Reset_Password", urlPatterns = {"/Reset_Password"})
 public class Reset_Password extends HttpServlet {
+
+    @EJB
+    MstMemberFacade memberFacade;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,9 +43,25 @@ public class Reset_Password extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String email = request.getParameter("resetEmail");
 
-            request.getSession().setAttribute("resetResponse", "PING: " + email);
+            MstMember user = memberFacade.getUser(email);
+
+            if (user != null) {
+                if (user.getStatus().equals("Pending")) {
+                    request.getSession().setAttribute("error", "User has not been approved yet. Please wait to be approved");
+                } else {
+                    user.setPassword(user.getUsername() + "-" + user.getIcNo());
+                    memberFacade.edit(user);
+                    request.getSession().setAttribute("msg", "Password has been reset to the default combination: [username]-[ic number]");
+                }
+            } else {
+                request.getSession().setAttribute("error", "No users with this email!");
+            }
             response.sendRedirect("Login");
 //            rd.forward(request, response);
+        } catch (Exception ex) {
+            System.out.println("Reset_Password: " + ex.getMessage());
+            request.getSession().setAttribute("error", "Unexpected error encountered");
+            response.sendRedirect("Login");
         }
     }
 

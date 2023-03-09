@@ -103,7 +103,6 @@
                                        placeholder="Password" name="password" required>
                                 <button id="btnShowPassword" class="input-group-text" type="button">
                                     <i id="passwordIcon" class="bi bi-eye-fill"></i></button>
-
                             </div>
 
                             <!-- Submit -->
